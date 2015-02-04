@@ -1,0 +1,24 @@
+{
+  "name": "ngRibbon",
+  "version": "0.0.1",
+  "homepage": "https://github.com/schmuli/ngRibbon",
+  "authors": [
+    "Schmulik Raskin"
+  ],
+  "description": "Ribbon component in AngularJS",
+  "keywords": [
+    "Ribbon",
+    "Angular"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angularjs": "~1.3.12"
+  }
+}

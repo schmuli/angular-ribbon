@@ -1,0 +1,23 @@
+{
+  "name": "ngRibbon",
+  "version": "0.0.1",
+  "description": "Ribbon component using AngularJS",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/schmuli/ngRibbon.git"
+  },
+  "keywords": [
+    "Ribbon",
+    "AngularJS"
+  ],
+  "author": "Schmulik Raskin",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/schmuli/ngRibbon/issues"
+  },
+  "homepage": "https://github.com/schmuli/ngRibbon",
+  "devDependencies": {
+    "gulp": "^3.8.10"
+  }
+}
