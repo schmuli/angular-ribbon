@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html ng-app="RibbonApp">
+	<head>
+		<title>Office Ribbon</title>
+
+		<style>
+			/* ribbon color: #2b579a; */
+            /* ribbon color: #3e6db5; */
+            /* ribbon border color: #d6d6d6; */
+
+			html, body {
+				height: 100%;
+				padding: 0;
+				margin: 0;
+				overflow: hidden;
+				font-family: 'Segoe UI', Arial, Verdana, sans-serif;
+			}
+
+			.title-bar {
+                position: absolute;
+                top: 0;
+                width: 100%;
+				line-height: 30px;
+                z-index: 1000;
+			}
+
+			.title-bar .title {
+				margin: 0 auto;
+				display: table;
+				font-size: 12px;
+			}
+
+			.ribbon {
+				height: 130px;
+				background-color: white;
+				border-bottom: solid 1px #d6d6d6;
+                margin-top: 30px;
+                font-size: 12px;
+			}
+
+			.ribbon .tabs {
+				border-bottom: solid 1px #d6d6d6;
+			}
+
+			.ribbon .tabs .tab-name {
+				display: inline-block;
+				cursor: pointer;
+				padding: 4px 10px;
+				text-transform: uppercase;
+                box-sizing: border-box;
+                border-top: solid 1px;
+				border-left: solid 1px;
+				border-right: solid 1px;
+                border-color: transparent;
+                margin-bottom: -1px;
+			}
+
+			.ribbon .tabs .tab-name.active {
+                border-color:  #d6d6d6;
+				border-bottom: solid 1px white;
+				color: #2b579a;
+			}
+
+			.ribbon .tabs .tab-name.backstage {
+				background-color: #2b579a;
+				border-color: #2b579a;
+				color: white;
+				padding-left: 20px;
+				padding-right: 20px;
+			}
+
+            .ribbon .tabs .tab-name.backstage:hover {
+                background-color: #3e6db5;
+                border-color: #3e6db5;
+            }
+
+			.ribbon .tab-contents {
+				padding: 4px;
+                height: 100px;
+                overflow: hidden;
+			}
+
+			.ribbon .tab-contents > div {
+				display: none;
+                height: 100%;
+			}
+
+			.ribbon .tab-contents > div.active {
+				display: block;
+			}
+
+            .ribbon .tab-content.backstage {
+                position: absolute;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                right: 0;
+                background-color: white;
+                display: none;
+            }
+
+            .ribbon .tab-content.backstage.active {
+                display: flex;
+            }
+
+            .ribbon .backstage-menu {
+                width: 125px;
+                background-color: #2b579a;
+            }
+
+            .ribbon .close-backstage {
+                width: 30px;
+                height: 30px;
+                border: solid 2px white;
+                border-radius: 50%;
+                cursor: pointer;
+                color: white;
+                font-size: 30px;
+                line-height: 20px;
+                text-align: center;
+                margin: 20px 0 15px 20px;
+            }
+
+            .ribbon .close-backstage:hover {
+                color: #a3a0a0;
+                border-color: #a3a0a0;
+            }
+
+            .ribbon .backstage-menu ul {
+                list-style: none;
+                margin: 0;
+                padding: 0;
+            }
+
+            .ribbon .backstage-menu li {
+                color: white;
+                line-height: 40px;
+                cursor: pointer;
+                padding: 0 0 0 20px;
+            }
+
+            .ribbon .backstage-menu li.selected {
+                background-color: #3e6db5;
+            }
+
+            .ribbon .backstage-menu li:hover {
+                background-color: #19478a;
+            }
+
+            .ribbon .backstage-content {
+                flex: 1;
+                padding: 30px;
+            }
+
+            .action {
+                border: solid 1px #d6d6d6;
+            }
+
+            .action:hover {
+                background-color: #d6d6d6;
+            }
+
+            [data-tooltip-container] {
+                display: none;
+                position: absolute;
+                top: 161px;
+                padding: 5px;
+                border: solid 1px darkgray;
+                background-color: white;
+                font-size: 12px;
+                max-width: 150px;
+            }
+
+            [data-tooltip-container] > [ng-bind=title] {
+                font-weight: bold;
+                margin-bottom: 5px;
+            }
+
+            [data-tooltip-container].active {
+                display: block;
+            }
+
+		</style>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.20/angular.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                var backstage = this.querySelector('.tab-content.backstage');
+
+                document.querySelector('.close-backstage')
+                    .addEventListener('click', function () {
+                        backstage.classList.remove('active');
+                    });
+
+                document.querySelector('.ribbon')
+                    .addEventListener('click', function (e) {
+                        var target = e.target;
+
+                        if (!target.matches('.tab-name')) {
+                            return;
+                        }
+
+                        if (target.matches('.backstage')) {
+                            backstage.classList.add('active');
+                        } else if (!target.matches('.active')) {
+                            var active = this.querySelector('.tab-name.active');
+                            active.classList.remove('active');
+                            target.classList.add('active');
+
+                            var activeContent = this.querySelector('.tab-content.active');
+                            activeContent.classList.remove('active');
+
+                            var activeTab = target.dataset.tab;
+                            var content = this.querySelector('.tab-content[data-tab=' + activeTab + ']');
+                            content.classList.add('active');
+                        }
+                    });
+            });
+        </script>
+
+        <script>
+            angular.module('RibbonApp', ['ng'])
+                .directive('tooltip', function ($rootScope, $compile, $sce) {
+                    var tooltipEl;
+                    var tooltip;
+                    var tooltipScope = $rootScope.$new(true);
+                    prepareTooltip();
+
+                    return {
+                        link: function (scope, element, attrs) {
+                            element.on('mouseenter', function (e) {
+                                tooltipEl.addClass('active');
+                                tooltipEl.css('left', e.target.offsetLeft + 'px');
+                                angular.extend(tooltipScope, {
+                                    title: attrs.title,
+                                    text: $sce.trustAsHtml(attrs.tooltip)
+                                });
+                                tooltipScope.$digest();
+                            });
+                            element.on('mouseleave', function () {
+                                tooltipEl.removeClass('active');
+                            });
+                        }
+                    };
+
+                    function prepareTooltip() {
+                        if (!tooltipEl) {
+                            tooltipEl = angular.element('<div data-tooltip-container><div ng-if="title" ng-bind="title"></div><div ng-bind-html="text"></div></div>');
+                            tooltip = $compile(tooltipEl.contents())(tooltipScope);
+                            angular.element(document.body).append(tooltipEl);
+                        }
+                    }
+                });
+        </script>
+	</head>
+
+	<body>
+
+    <div class="title-bar">
+        <div class="title">Case 10203030 - UFED Analytics</div>
+    </div>
+
+	<div class="ribbon">
+
+		<div class="tabs">
+			<div class="tab-name backstage">File</div>
+			<div class="tab-name active" data-tab="home">Home</div>
+			<div class="tab-name" data-tab="insert">Insert</div>
+		</div>
+
+        <div class="tab-content backstage">
+            <div class="backstage-menu">
+                <div class="close-backstage">&#65513;</div>
+                <ul>
+                    <li class="selected">New</li>
+                    <li>Open</li>
+                    <li>Recent</li>
+                </ul>
+            </div>
+            <div class="backstage-content">
+                Backstage Contents
+            </div>
+        </div>
+		<div class="tab-contents">
+            <div class="tab-content active" data-tab="home">
+                Home Tab
+                <span class="action" data-tooltip="Cut the selected text" data-title="Cut (Ctrl+x)">Cut</span>
+                <span class="action" data-tooltip="Copy the selected text">Cut</span>
+                <span class="action" data-tooltip="Paste the selected text.&lt;br /&gt;This is the second line.">Cut</span>
+                <span class="action" data-tooltip="Undo last action">Cut</span>
+                <span class="action" data-tooltip="Redo last action">Cut</span>
+            </div>
+            <div class="tab-content" data-tab="insert">Insert Tab</div>
+		</div>
+	</div>
+
+	</body>
+</html>
