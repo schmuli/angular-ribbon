@@ -39,6 +39,7 @@ Each action is a directive that can handle itself: layout, linebreaks.
 	1. Backstage Content
 3. Title Bar
 4. Collapsible
+4. Responsive
 5. Contextual Tabs
 6. User Settings
 7. Actions

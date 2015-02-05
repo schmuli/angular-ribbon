@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html ng-app="ngRibbon">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>ngRibbon</title>
+
+    <link href="ngRibbon.css" rel="stylesheet" />
+</head>
+<body>
+    <ng-ribbon title="'Document 1'">
+        <ng-ribbon-backstage title="File"></ng-ribbon-backstage>
+        <ng-ribbon-tab title="Home">
+            <ng-ribbon-group title="Clipboard"></ng-ribbon-group>
+            <ng-ribbon-group title="Font"></ng-ribbon-group>
+            <ng-ribbon-group title="Paragraph"></ng-ribbon-group>
+            <ng-ribbon-group title="Styles"></ng-ribbon-group>
+            <ng-ribbon-group title="Editing"></ng-ribbon-group>
+        </ng-ribbon-tab>
+    </ng-ribbon>
+
+    <script src="../bower_components/angularjs/angular.js"></script>
+    <script src="ngRibbon.js"></script>
+
+    <script id="ribbon.html" type="text/ng-template">
+        <div class="ng-ribbon">
+            <div class="ng-ribbon-title">
+                <div>{{ ribbon.title }}</div>
+            </div>
+            <div class="ribbon">
+                <div class="tabs">
+                    <div ng-if="ribbon.hasBackstage" class="tab-name backstage">{{ ribbon.backstage.title }}</div>
+                    <div class="tab-name" ng-repeat="tab in ribbon.tabs" ng-class="{ 'active': tab.active }">{{ tab.title }}</div>
+                </div>
+                <div ng-transclude=""></div>
+            </div>
+        </div>
+    </script>
+    <script id="backstage.html">
+
+    </script>
+
+</body>
+</html>
