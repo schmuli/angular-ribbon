@@ -29,6 +29,8 @@ Tabs are registered with the TabRegister provider.
 		activateContextual(groupName: string, context: any): Deactivate;
 	}
 
+Backstage content should be reusable in a welcome screen. There should be a directive for the content (menu and details), which will be used by a backstage and welcome screen directive, each of which will indicate context.
+
 Each action is a directive that can handle itself: layout, linebreaks.
 
 ## Features:
