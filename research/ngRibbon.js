@@ -76,6 +76,8 @@ angular.module('ngRibbon', ['ngRibbon.menu', 'ngRibbon.utils'])
                 }
             },
             activate: {
+                //http://stackoverflow.com/questions/5497073/how-to-differentiate-single-click-event-and-double-click-event
+                //http://stackoverflow.com/questions/20444409/handling-ng-click-and-ng-dblclick-on-the-same-element-with-angularjs
                 value: function (tab, e) {
                     if (this.activeTab) {
                         if (this.activeTab === tab) {
