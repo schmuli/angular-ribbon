@@ -1,9 +1,215 @@
 angular.module('ngRibbon', ['ngRibbon.menu', 'ngRibbon.utils'])
     .directive('ngRibbon', function () {
-        var _backstage;
-        
-        function BackstageController(title) {
+        function ContextualGroup(parent, title, color) {
+            this.parent = parent;
             this.title = title;
+            this.color = 'color-' + color;
+            this.tabs = [];
+
+            this.initialize();
+        }
+
+        Object.defineProperties(ContextualGroup.prototype, {
+            initialize: {
+                value: function () {
+                    var context = this.parent.ribbonContext;
+                    if (context.hasOwnProperty(this.title)) {
+                        return;
+                    }
+
+                    var _this = this;
+                    Object.defineProperty(context, this.title, {
+                        get: function () {
+                            return _this.visible;
+                        },
+                        set: function (value) {
+                            _this.visible = value;
+                            _this.onVisibleChanged();
+                        }
+                    });
+                }
+            },
+            hasActive: {
+                get: function () {
+                    return this.tabs.filter(function (tab) {
+                        return tab.active;
+                    }).length > 0;
+                }
+            },
+            onVisibleChanged: {
+                value: function () {
+                    if (this.visible && !this.parent.collapsed) {
+                        this.parent.activate(this.tabs[0]);
+                    } else if (this.hasActive) {
+                        this.parent.activate();
+                    }
+                }
+            }
+        });
+
+        function RibbonController(scope, document, contextualColors) {
+            this.scope = scope;
+            this.document = document;
+            this.contextualColors = contextualColors;
+            this.tabs = [];
+            this.contextualGroups = [];
+            this._collapsed = false;
+        }
+
+        Object.defineProperties(RibbonController.prototype, {
+            hasBackstage: {
+                get: function () {
+                    return !!this.backstage;
+                }
+            },
+            collapsed: {
+                get: function () {
+                    return this._collapsed && !this.activeTab;
+                }
+            },
+            toggleCollapse: {
+                value: function () {
+                    this._collapsed = !this._collapsed;
+                    if (this._collapsed) {
+                        this.clearActiveTab();
+                    }
+                }
+            },
+            activate: {
+                value: function (tab, e) {
+                    if (this.activeTab) {
+                        if (this.activeTab === tab) {
+                            if (this._collapsed) {
+                                this.clearActiveTab();
+                            }
+                            return;
+                        }
+                        this.clearActiveTab();
+                    }
+
+                    if (!tab) {
+                        tab = this.tabs[0];
+                    }
+
+                    this.activeTab = tab;
+                    this.activeTab.active = true;
+
+                    if (this._collapsed) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        this.globalClearActiveTab();
+                    }
+                }
+            },
+            globalClearActiveTab: {
+                value: function () {
+                    if (this.globalRegistered) {
+                        return;
+                    }
+                    this.globalRegistered = true;
+                    var _this = this;
+                    this.document.one('click', function () {
+                        _this.clearActiveTab();
+                        _this.globalRegistered = false;
+                        _this.scope.$digest();
+                    });
+                }
+            },
+            clearActiveTab: {
+                value: function () {
+                    this.activeTab.active = false;
+                    this.activeTab = null;
+                }
+            },
+            addTab: {
+                value: function (title, contextualTitle) {
+                    var active = this.tabs.length === 0;
+                    var tab = {
+                        title: title,
+                        active: active
+                    };
+                    if (active) {
+                        this.activeTab = tab;
+                    }
+
+                    if (!contextualTitle) {
+                        this.tabs.push(tab);
+                    } else {
+                        this.addContextualTab(tab, contextualTitle);
+                    }
+                }
+            },
+            addContextualTab: {
+                value: function (tab, contextualTitle) {
+                    var contextual = this.findContextual(contextualTitle);
+                    if (!contextual) {
+                        contextual = new ContextualGroup(this, contextualTitle, this.contextualColors.next());
+                        this.contextualGroups.push(contextual);
+                    }
+                    contextual.tabs.push(tab);
+                }
+            },
+            findContextual: {
+                value: function (title) {
+                    var contextual = this.contextualGroups.filter(function (group) {
+                        return group.title === title;
+                    });
+                    return contextual.length > 0 ? contextual[0] : null;
+                }
+            }
+        });
+
+        return {
+            scope: {
+                title: '=',
+                ribbonContext: '=context'
+            },
+            transclude: true,
+            templateUrl: 'ribbon.html',
+            controller: ['$scope', '$document', 'contextualColors', RibbonController],
+            controllerAs: 'ribbon',
+            bindToController: true
+        };
+    })
+    .directive('ngRibbonTitle', function (optimizedResize) {
+        return {
+            scope: {
+                title: '='
+            },
+            require: '^ngRibbon',
+            template: '<div ng-style="position()">{{ title }}</div>',
+            link: function (scope, element) {
+                var titleElement = element.find('div');
+
+                var originalPosition;
+                optimizedResize.add(function () {
+                    originalPosition = undefined;
+                    scope.$digest();
+                });
+
+                scope.position = function () {
+                    var position = calculatePosition(titleElement[0], originalPosition);
+                    if (position && !originalPosition) {
+                        originalPosition = position;
+                    }
+                    return position ? {marginLeft: position + 'px'} : undefined;
+                }
+            }
+        };
+
+        function calculatePosition(titleElement, originalPosition) {
+            var currentPosition = titleElement.getBoundingClientRect();
+            var overlap = document.elementFromPoint(currentPosition.left, currentPosition.top);
+            if (overlap && overlap.parentElement.classList.contains('contextual-group')) {
+                var overlapPosition = overlap.getBoundingClientRect();
+                return overlapPosition.left + overlapPosition.width + 1;
+            } else {
+                return originalPosition;
+            }
+        }
+    })
+    .directive('ngRibbonBackstage', function () {
+        function BackstageController() {
         }
 
         Object.defineProperties(BackstageController.prototype, {
@@ -19,117 +225,18 @@ angular.module('ngRibbon', ['ngRibbon.menu', 'ngRibbon.utils'])
             }
         });
 
-        function RibbonController(ribbonTabs) {
-            this.ribbonTabs = ribbonTabs;
-        }
-        
-        Object.defineProperties(RibbonController.prototype, {
-            hasBackstage: {
-                get: function () {
-                    return !!_backstage;
-                }
-            },
-            backstage: {
-                get: function () {
-                    return _backstage;
-                }
-            },
-            setBackstage: {
-                value: function (title) {
-                    _backstage = new BackstageController(title);
-                    return _backstage;
-                }
-            },
-            tabs: {
-                get: function () {
-                    return this.ribbonTabs.tabs;
-                }
-            },
-            contextualGroups: {
-                get: function () {
-                    return this.ribbonTabs.contextualGroups;
-                }
-            },
-            addTab: {
-                value: function (title, contextual) {
-                    var tab = this.ribbonTabs.addTab(title, contextual);
-                    if (tab.active) {
-                        this.activeTab = tab;
-                    }
-                }
-            },
-            activate: {
-                value: function (tab) {
-                    if (this.activeTab) {
-                        this.activeTab.active = false;
-                        this.activeTab = null;
-                    }
-
-                    this.activeTab = tab;
-                    this.activeTab.active = true;
-                }
-            }
-        });
-
-        return {
-            scope: {
-                title: '='
-            },
-            transclude: true,
-            templateUrl: 'ribbon.html',
-            controller: ['ribbonTabs', RibbonController],
-            controllerAs: 'ribbon',
-            bindToController: true
-        };
-    })
-    .directive('ngRibbonTitle', function (optimizedResize) {        
-        return {
-            scope: {
-                title: '='
-            },
-            require: '^ngRibbon',
-            template: '<div ng-style="position()">{{ title }}</div>',
-            link: function (scope, element, attrs, ribbonController) {
-                var titleElement = element.find('div');
-          
-                var originalPosition;
-                optimizedResize.add(function () {
-                    originalPosition = undefined;
-                    scope.$digest();
-                });
-                
-                scope.position = function () {
-                    var position = calculatePosition(titleElement[0], originalPosition);
-                    if (position && !originalPosition) {
-                        originalPosition = position;
-                    }
-                    return position ? { marginLeft: position + 'px' } : undefined;
-                }
-            }
-        };
-        
-        function calculatePosition(titleElement, originalPosition) {
-            var currentPosition = titleElement.getBoundingClientRect();                  
-            var overlap = document.elementFromPoint(currentPosition.left, currentPosition.top);
-            if (overlap && overlap.parentElement.classList.contains('contextual-group')) {
-                var overlapPosition = overlap.getBoundingClientRect();
-                var newLeft = overlapPosition.left + overlapPosition.width + 1;
-                return newLeft;
-            } else {
-                return originalPosition;
-            }
-        }
-    })
-    .directive('ngRibbonBackstage', function () {
         return {
             scope: {
                 title: '='
             },
             transclude: true,
             templateUrl: 'backstage.html',
-            require: '^ngRibbon',
-            link: function (scope, element, attrs, ribbonController) {
-                scope.backstage = ribbonController.setBackstage(scope.title);
+            require: ['^ngRibbon', 'ngRibbonBackstage'],
+            controller: [BackstageController],
+            controllerAs: 'backstage',
+            bindToController: true,
+            link: function (scope, element, attrs, controllers) {
+                controllers[0].backstage = controllers[1];
             }
         };
     })
@@ -137,78 +244,31 @@ angular.module('ngRibbon', ['ngRibbon.menu', 'ngRibbon.utils'])
         return {
             scope: {
                 title: '=',
-                contextual: '@?',
-                color: '@?'
+                contextual: '@?'
             },
             template: '<div ng-transclude></div>',
             transclude: true,
             replace: true,
             require: '^ngRibbon',
             link: function (scope, element, attrs, ribbonController) {
-                var contextual = scope.contextual
-                    ? { title: scope.contextual, color: scope.color }
-                    : undefined;
-                    
-                ribbonController.addTab(scope.title, contextual);
+                ribbonController.addTab(scope.title, scope.contextual);
             }
         };
     })
     .directive('ngRibbonGroup', function () {
         return {};
     })
-    .factory('ribbonTabs', function () {
-        var _tabs = [];
-        var _contextualGroups = [];
-        
-        return {
-            tabs: _tabs,
-            contextualGroups: _contextualGroups,
-            addTab: function (title, contextual) {
-                var active = _tabs.length === 0;
-                var tab = {
-                    title: title,
-                    active: active
-                };
-                if (!contextual) {
-                    addTab(tab);
-                } else {
-                    addContextualTab(contextual, tab);
-                }
-                return tab;
-            }
-        };
+    .factory('contextualColors', function () {
+        var index = 1;
 
-        function addTab(tab) {
-            _tabs.push(tab);
-        }
-        
-        function addContextualTab(group, tab) {
-            var contextual = _contextualGroups.filter(function (cg) {
-                return cg.title === group.title;
-            });
-            if (contextual.length === 0) {
-                _contextualGroups.push({
-                    title: group.title,
-                    colors: {
-                        color: group.color,
-                        backgroundColor: shadeBlend(0.97, group.color), //'#E6F3E6',
-                        borderTopColor: group.color
-                    },
-                    tabs: [tab]
-                });
-            } else {
-                contextual[0].tabs.push(tab);
-            }
-        }
-        
-        function shadeBlend(p,c0,c1) {
-            var n=p<0?p*-1:p,u=Math.round,w=parseInt;
-            if(c0.length>7){
-                var f=c0.split(","),t=(c1?c1:p<0?"rgb(0,0,0)":"rgb(255,255,255)").split(","),R=w(f[0].slice(4)),G=w(f[1]),B=w(f[2]);
-                return "rgb("+(u((w(t[0].slice(4))-R)*n)+R)+","+(u((w(t[1])-G)*n)+G)+","+(u((w(t[2])-B)*n)+B)+")"
-            }else{
-                var f=w(c0.slice(1),16),t=w((c1?c1:p<0?"#000000":"#FFFFFF").slice(1),16),R1=f>>16,G1=f>>8&0x00FF,B1=f&0x0000FF;
-                return "#"+(0x1000000+(u(((t>>16)-R1)*n)+R1)*0x10000+(u(((t>>8&0x00FF)-G1)*n)+G1)*0x100+(u(((t&0x0000FF)-B1)*n)+B1)).toString(16).slice(1)
+        return {
+            next: function () {
+                var color = index;
+                index += 1;
+                if (index > 6) {
+                    index = 1;
+                }
+                return color;
             }
         }
     });
@@ -306,12 +366,14 @@ angular.module('ngRibbon.utils', [])
     .factory('optimizedResize', function ($window) {
         var callbacks = [];
         var running = false;
-        
-        var timeout = $window.requestFrameAnimation || 
-            function (callback) { return $window.setTimeout(callback, 66); };
-        
+
+        var timeout = $window.requestFrameAnimation ||
+            function (callback) {
+                return $window.setTimeout(callback, 66);
+            };
+
         return {
-            add: function(callback) {
+            add: function (callback) {
                 if (callback) {
                     if (callbacks.length === 0) {
                         window.addEventListener('resize', resize);
@@ -320,17 +382,17 @@ angular.module('ngRibbon.utils', [])
                 }
             }
         };
-        
+
         function resize() {
-            if (!running) {            
+            if (!running) {
                 running = true;
                 timeout(runCallbacks);
             }
         }
-        
+
         // run the actual callbacks
         function runCallbacks() {
-            callbacks.forEach(function(callback) {
+            callbacks.forEach(function (callback) {
                 callback();
             });
 

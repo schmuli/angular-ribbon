@@ -12,10 +12,19 @@
             height: 100%;
             overflow: hidden;
         }
+
+        .main-content {
+            padding: 30px;
+        }
+
+        .ng-cloak {
+            display: none !important;
+        }
     </style>
 </head>
 <body ng-controller="AppController as app">
-<ng-ribbon data-title="'Document 1'">
+
+<ng-ribbon class="ng-cloak" data-title="'Document 1'" data-context="app.ribbonContext">
     <ng-ribbon-backstage data-title="'File'">
         <ng-ribbon-menu>
             <ng-ribbon-menu-item data-title="'Open'">
@@ -39,16 +48,21 @@
     <ng-ribbon-tab data-title="'Insert'">
 
     </ng-ribbon-tab>
-    <ng-ribbon-tab data-title="'Context'" contextual="Table" color="rgb(0,128,0)">
-        
+    <ng-ribbon-tab data-title="'Context'" contextual="table">
+
     </ng-ribbon-tab>
-    <ng-ribbon-tab data-title="'Photo 1'" contextual="Photo" color="rgb(255,0,0)">
-        
+    <ng-ribbon-tab data-title="'Photo 1'" contextual="photo">
+
     </ng-ribbon-tab>
-    <ng-ribbon-tab data-title="'Photo 2'" contextual="Photo" color="rgb(255,0,0)">
-        
+    <ng-ribbon-tab data-title="'Photo 2'" contextual="photo">
+
     </ng-ribbon-tab>
 </ng-ribbon>
+
+<div class="main-content">
+    <button ng-click="app.toggleContext('table')">Table</button>
+    <button ng-click="app.toggleContext('photo')">Photo</button>
+</div>
 
 <script src="../bower_components/angularjs/angular.js"></script>
 <script src="ngRibbon.js"></script>
@@ -59,13 +73,19 @@
                 this.alert = function (item) {
                     alert('Called from Menu Item: ' + item);
                 };
+
+                this.ribbonContext = {};
+
+                this.toggleContext = function (group) {
+                    this.ribbonContext[group] = !this.ribbonContext[group];
+                }
             });
 </script>
 
 <script id="ribbon.html" type="text/ng-template">
     <ng-ribbon-title data-title="ribbon.title"></ng-ribbon-title>
     <div class="ribbon"
-         ng-class="{ 'backstage-open': ribbon.backstage.isOpen }">
+         ng-class="{ 'backstage-open': ribbon.backstage.isOpen, 'collapsed': ribbon.collapsed }">
         <div class="tabs">
             <div ng-if="ribbon.hasBackstage"
                  class="tab-name backstage"
@@ -75,23 +95,25 @@
             <div class="tab-name"
                  ng-repeat="tab in ribbon.tabs"
                  ng-class="{ 'active': tab.active }"
-                 ng-click="ribbon.activate(tab, false)">
+                 ng-click="ribbon.activate(tab, $event)"
+                 ng-dblclick="ribbon.toggleCollapse()">
                 {{ tab.title }}
             </div>
-            <div class="contextual-group"
+            <div class="contextual-group ng-class:group.color"
                  ng-repeat="group in ribbon.contextualGroups"
                  ng-class="{ 'active': group.active }"
-                 ng-style="group.colors">
-                 <span>{{ group.title }}</span>
+                 ng-show="group.visible">
+                <span>{{ group.title }}</span>
                 <div class="tab-name"
                      ng-repeat="tab in group.tabs"
                      ng-class="{ 'active': tab.active }"
-                     ng-click="ribbon.activate(tab, false)">
+                     ng-click="ribbon.activate(tab, $event)"
+                     ng-dblclick="ribbon.toggleCollapse()">
                     {{ tab.title }}
                 </div>
             </div>
         </div>
-        <div ng-transclude=""></div>
+        <div class="tab-content" ng-class="{ 'float': ribbon._collapsed }" ng-transclude=""></div>
     </div>
 </script>
 
@@ -100,7 +122,7 @@
          ng-click="backstage.close()">
         <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="30px" height="30px" viewBox="0 0 512 512">
             <path fill="#fff"
-                  d="M377.916,243.5H164.262l58.659-58.661c4.882-4.882,4.882-12.796,0-17.678c-4.883-4.881-12.797-4.881-17.678,0l-79.998,80c-4.882,4.882-4.882,12.796,0,17.678l80,80c2.44,2.44,5.64,3.661,8.839,3.661s6.398-1.221,8.839-3.661 c4.882-4.882,4.882-12.796,0-17.678L164.262,268.5h213.654c6.903,0,12.5-5.597,12.5-12.5S384.819,243.5,377.916,243.5z"/>
+                  d="M377.916,243.5H164.262l58.659-58.661c4.882-4.882,4.882-12.796,0-17.678c-4.883-4.881-12.797-4.881-17.678,0l-79.998,80c-4.882,4.882-4.882,12.796,0,17.678l80,80c2.44,2.44,5.64,3.661,8.839,3.661s6.398-1.221,8.839-3.661 c4.882-4.882,4.882-12.796,0-17.678L164.262,268.5h213.654c6.903,0,12.5-5.597,12.5-12.5S384.819,243.5,377.916,243.5z"></path>
         </svg>
     </div>
     <div class="backstage-content"

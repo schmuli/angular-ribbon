@@ -1,5 +1,11 @@
 ng-ribbon {
+    display: block;
     font-family: 'Segoe UI', Arial, Verdana, sans-serif;
+    margin-bottom: 5px;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 ng-ribbon ng-ribbon-title {
@@ -18,11 +24,36 @@ ng-ribbon ng-ribbon-title > div {
 }
 
 ng-ribbon .ribbon {
-    height: 130px;
     background-color: white;
-    border-bottom: solid 1px #d6d6d6;
     margin-top: 30px;
     font-size: 12px;
+}
+
+ng-ribbon .ribbon .tab-content {
+    height: 104px;
+    width: 100%;
+    background-color: white;
+    border-bottom: solid 1px #d6d6d6;
+    -webkit-transition: height .3s ease-in;
+    -moz-transition: height .2s ease-in;
+    -ms-transition: height .2s ease-in;
+    -o-transition: height .2s ease-in;
+    transition: height .2s ease-in;
+}
+
+/* Collapsed Ribbon */
+
+ng-ribbon .ribbon.collapsed .tabs {
+    border-bottom: none;
+}
+
+ng-ribbon .ribbon.collapsed .tab-content {
+    height: 0;
+    border-bottom: none;
+}
+
+ng-ribbon .ribbon .tab-content.float {
+    position: absolute;
 }
 
 /* Tabs Titles */
@@ -70,7 +101,42 @@ ng-ribbon .contextual-group {
     display: inline-block;
     position: relative;
     margin-right: 5px;
-    
+}
+
+ng-ribbon .contextual-group.color-1 {
+    border-top-color: #C9599C;
+    background-color: #FCF0F7;
+    color: #C9599C;
+}
+
+ng-ribbon .contextual-group.color-2 {
+    border-top-color: #F2CB1D;
+    background-color: #FFFBE6;
+    color: #F2CB1D;
+}
+
+ng-ribbon .contextual-group.color-3 {
+    border-top-color: #FF9D00;
+    background-color: #FFF8ED;
+    color: #FF9D00;
+}
+
+ng-ribbon .contextual-group.color-4 {
+    border-top-color: #49A349;
+    background-color: #E6F3E6;
+    color: #49A349;
+}
+
+ng-ribbon .contextual-group.color-5 {
+    border-top-color: #935ED3;
+    background-color: #F6F1FC;
+    color: #935ED3;
+}
+
+ng-ribbon .contextual-group.color-6 {
+    border-top-color: #2299AB;
+    background-color: #EFF8F9;
+    color: #2299AB;
 }
 
 ng-ribbon .contextual-group > span {
@@ -89,6 +155,10 @@ ng-ribbon .contextual-group > span {
     z-index: 1001;
 }
 
+ng-ribbon .ribbon.backstage-open .contextual-group > span {
+    visibility: hidden;
+}
+
 ng-ribbon .contextual-group .tab-name {
     color: initial;
     margin-bottom: 0;
@@ -102,7 +172,7 @@ ng-ribbon .contextual-group .tab-name.active {
 /* Backstage */
 
 ng-ribbon .ribbon ng-ribbon-backstage {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     bottom: 0;
@@ -130,12 +200,12 @@ ng-ribbon .ribbon ng-ribbon-backstage .backstage-close {
 }
 
 ng-ribbon .ribbon ng-ribbon-backstage .backstage-close:hover {
-    color: #a3a0a0;
-    border-color: #a3a0a0;
+    color: #97B1D8;
+    border-color: #97B1D8;
 }
 
 ng-ribbon .ribbon ng-ribbon-backstage .backstage-close:hover path {
-    fill: #a3a0a0;
+    fill: #97B1D8;
 }
 
 ng-ribbon .ribbon ng-ribbon-backstage .backstage-content {

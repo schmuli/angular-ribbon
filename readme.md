@@ -39,8 +39,14 @@ Each action is a directive that can handle itself: layout, linebreaks.
 2. Backstage
 	1. Backstage Menu
 	1. Backstage Content
+	1. Slide in animation
+	1. Slide out animation
 3. Title Bar
+4. Quick Access Toolbar
 4. Collapsible
+    1. Slide down animation
+    1. Handle double clicks on tabs
+    1. Handle click outside ribbon (don't collapse on all clicks)
 4. Responsive
 5. Contextual Tabs
     1. Support groups
