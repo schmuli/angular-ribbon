@@ -15,26 +15,38 @@
     </style>
 </head>
 <body ng-controller="AppController as app">
-<ng-ribbon title="'Document 1'">
-    <ng-ribbon-backstage title="'File'">
+<ng-ribbon data-title="'Document 1'">
+    <ng-ribbon-backstage data-title="'File'">
         <ng-ribbon-menu>
-            <ng-ribbon-menu-item title="'Open'">
+            <ng-ribbon-menu-item data-title="'Open'">
                 <div>Recent Cases</div>
             </ng-ribbon-menu-item>
-            <ng-ribbon-menu-item title="'Close'" action="app.alert('close')"></ng-ribbon-menu-item>
+            <ng-ribbon-menu-item data-title="'Another'">
+                <div>Another Menu Item</div>
+            </ng-ribbon-menu-item>
+            <ng-ribbon-menu-item data-title="'Close'" action="app.alert('close')"></ng-ribbon-menu-item>
             <ng-ribbon-menu-separator></ng-ribbon-menu-separator>
-            <ng-ribbon-menu-item title="'Options'" action="app.alert('options')"></ng-ribbon-menu-item>
+            <ng-ribbon-menu-item data-title="'Options'" action="app.alert('options')"></ng-ribbon-menu-item>
         </ng-ribbon-menu>
     </ng-ribbon-backstage>
-    <ng-ribbon-tab title="'Home'">
-        <ng-ribbon-group title="Clipboard"></ng-ribbon-group>
-        <ng-ribbon-group title="Font"></ng-ribbon-group>
-        <ng-ribbon-group title="Paragraph"></ng-ribbon-group>
-        <ng-ribbon-group title="Styles"></ng-ribbon-group>
-        <ng-ribbon-group title="Editing"></ng-ribbon-group>
+    <ng-ribbon-tab data-title="'Home'">
+        <ng-ribbon-group data-title="Clipboard"></ng-ribbon-group>
+        <ng-ribbon-group data-title="Font"></ng-ribbon-group>
+        <ng-ribbon-group data-title="Paragraph"></ng-ribbon-group>
+        <ng-ribbon-group data-title="Styles"></ng-ribbon-group>
+        <ng-ribbon-group data-title="Editing"></ng-ribbon-group>
     </ng-ribbon-tab>
-    <ng-ribbon-tab title="'Insert'">
+    <ng-ribbon-tab data-title="'Insert'">
 
+    </ng-ribbon-tab>
+    <ng-ribbon-tab data-title="'Context'" contextual="Table" color="rgb(0,128,0)">
+        
+    </ng-ribbon-tab>
+    <ng-ribbon-tab data-title="'Photo 1'" contextual="Photo" color="rgb(255,0,0)">
+        
+    </ng-ribbon-tab>
+    <ng-ribbon-tab data-title="'Photo 2'" contextual="Photo" color="rgb(255,0,0)">
+        
     </ng-ribbon-tab>
 </ng-ribbon>
 
@@ -51,27 +63,35 @@
 </script>
 
 <script id="ribbon.html" type="text/ng-template">
-    <div class="ng-ribbon">
-        <div class="ng-ribbon-title">
-            <div>{{ ribbon.title }}</div>
-        </div>
-        <div class="ribbon"
-             ng-class="{ 'backstage-open': ribbon.backstage.isOpen }">
-            <div class="tabs">
-                <div ng-if="ribbon.hasBackstage"
-                     class="tab-name backstage"
-                     ng-click="ribbon.backstage.open()">
-                    {{ ribbon.backstage.title }}
-                </div>
+    <ng-ribbon-title data-title="ribbon.title"></ng-ribbon-title>
+    <div class="ribbon"
+         ng-class="{ 'backstage-open': ribbon.backstage.isOpen }">
+        <div class="tabs">
+            <div ng-if="ribbon.hasBackstage"
+                 class="tab-name backstage"
+                 ng-click="ribbon.backstage.open()">
+                {{ ribbon.backstage.title }}
+            </div>
+            <div class="tab-name"
+                 ng-repeat="tab in ribbon.tabs"
+                 ng-class="{ 'active': tab.active }"
+                 ng-click="ribbon.activate(tab, false)">
+                {{ tab.title }}
+            </div>
+            <div class="contextual-group"
+                 ng-repeat="group in ribbon.contextualGroups"
+                 ng-class="{ 'active': group.active }"
+                 ng-style="group.colors">
+                 <span>{{ group.title }}</span>
                 <div class="tab-name"
-                     ng-repeat="tab in ribbon.tabs"
+                     ng-repeat="tab in group.tabs"
                      ng-class="{ 'active': tab.active }"
                      ng-click="ribbon.activate(tab, false)">
                     {{ tab.title }}
                 </div>
             </div>
-            <div ng-transclude=""></div>
         </div>
+        <div ng-transclude=""></div>
     </div>
 </script>
 

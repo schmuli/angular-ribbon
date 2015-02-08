@@ -43,6 +43,9 @@ Each action is a directive that can handle itself: layout, linebreaks.
 4. Collapsible
 4. Responsive
 5. Contextual Tabs
+    1. Support groups
+    1. Multiple tabs in contextual group
+    1. Group title affects Document title position
 6. User Settings
 7. Actions
 	1. Large Button

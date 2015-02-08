@@ -1,8 +1,8 @@
-.ng-ribbon {
+ng-ribbon {
     font-family: 'Segoe UI', Arial, Verdana, sans-serif;
 }
 
-.ng-ribbon .ng-ribbon-title {
+ng-ribbon ng-ribbon-title {
     position: absolute;
     top: 0;
     width: 100%;
@@ -10,13 +10,14 @@
     z-index: 1000;
 }
 
-.ng-ribbon .ng-ribbon-title > div {
+ng-ribbon ng-ribbon-title > div {
     margin: 0 auto;
     display: table;
     font-size: 12px;
+    padding: 0 5px;
 }
 
-.ribbon {
+ng-ribbon .ribbon {
     height: 130px;
     background-color: white;
     border-bottom: solid 1px #d6d6d6;
@@ -26,11 +27,11 @@
 
 /* Tabs Titles */
 
-.ribbon .tabs {
+ng-ribbon .ribbon .tabs {
     border-bottom: solid 1px #d6d6d6;
 }
 
-.ribbon .tabs .tab-name {
+ng-ribbon .tabs .tab-name {
     display: inline-block;
     cursor: pointer;
     padding: 4px 10px;
@@ -43,13 +44,14 @@
     margin-bottom: -1px;
 }
 
-.ribbon .tabs .tab-name.active {
+ng-ribbon .tabs .tab-name.active {
     border-color:  #d6d6d6;
     border-bottom: solid 1px white;
     color: #2b579a;
+    background-color: white;
 }
 
-.ribbon .tabs .tab-name.backstage {
+ng-ribbon .tabs .tab-name.backstage {
     background-color: #2b579a;
     border-color: #2b579a;
     color: white;
@@ -57,14 +59,49 @@
     padding-right: 20px;
 }
 
-.ribbon .tabs .tab-name.backstage:hover {
+ng-ribbon .tabs .tab-name.backstage:hover {
     background-color: #3e6db5;
     border-color: #3e6db5;
 }
 
+/* Contextual Tab Titles */
+
+ng-ribbon .contextual-group {
+    display: inline-block;
+    position: relative;
+    margin-right: 5px;
+    
+}
+
+ng-ribbon .contextual-group > span {
+    display: block;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -30px;
+    background-color: inherit;
+    border-top-color: inherit;
+    border-top-style: solid;
+    border-top-width: 5px;
+    line-height: 25px;
+    text-align: center;
+    text-transform: uppercase;
+    z-index: 1001;
+}
+
+ng-ribbon .contextual-group .tab-name {
+    color: initial;
+    margin-bottom: 0;
+}
+
+ng-ribbon .contextual-group .tab-name.active {
+    color: inherit;
+    margin-bottom: -1px;
+}
+
 /* Backstage */
 
-.ribbon ng-ribbon-backstage {
+ng-ribbon .ribbon ng-ribbon-backstage {
     position: absolute;
     top: 0;
     left: 0;
@@ -74,11 +111,11 @@
     display: none;
 }
 
-.ribbon.backstage-open ng-ribbon-backstage {
+ng-ribbon .ribbon.backstage-open ng-ribbon-backstage {
     display: block;
 }
 
-.ribbon ng-ribbon-backstage .backstage-close {
+ng-ribbon .ribbon ng-ribbon-backstage .backstage-close {
     position: absolute;
     width: 30px;
     height: 30px;
@@ -92,77 +129,77 @@
     margin: 20px 0 15px 20px;
 }
 
-.ribbon ng-ribbon-backstage .backstage-close:hover {
+ng-ribbon .ribbon ng-ribbon-backstage .backstage-close:hover {
     color: #a3a0a0;
     border-color: #a3a0a0;
 }
 
-.ribbon ng-ribbon-backstage .backstage-close:hover path {
+ng-ribbon .ribbon ng-ribbon-backstage .backstage-close:hover path {
     fill: #a3a0a0;
 }
 
-.ribbon ng-ribbon-backstage .backstage-content {
+ng-ribbon .ribbon ng-ribbon-backstage .backstage-content {
     height: 100%;
 }
 
 /* Menu */
 
-.ribbon ng-ribbon-menu {
+ng-ribbon .ribbon ng-ribbon-menu {
     display: flex;
     height: 100%;
 }
 
-.ribbon ng-ribbon-menu .ribbon-menu {
+ng-ribbon .ribbon ng-ribbon-menu .ribbon-menu {
     width: 125px;
     background-color: #2b579a;
 }
 
-.ribbon ng-ribbon-menu .ribbon-menu ul {
+ng-ribbon .ribbon ng-ribbon-menu .ribbon-menu ul {
     list-style: none;
     margin: 69px 0 0;
     padding: 0;
 }
 
-.ribbon ng-ribbon-menu .ribbon-menu li {
+ng-ribbon .ribbon ng-ribbon-menu .ribbon-menu li {
     color: white;
     line-height: 40px;
     cursor: pointer;
     padding: 0 0 0 20px;
 }
 
-.ribbon ng-ribbon-menu .ribbon-menu li.separator {
+ng-ribbon .ribbon ng-ribbon-menu .ribbon-menu li.separator {
     margin: 10px 20px;
     padding: 0;
     border-bottom: solid 1px #3E6DB5;
 }
 
-.ribbon ng-ribbon-menu .ribbon-menu li.selected {
+ng-ribbon .ribbon ng-ribbon-menu .ribbon-menu li.selected {
     background-color: #3e6db5;
 }
 
-.ribbon ng-ribbon-menu .ribbon-menu li:hover {
+ng-ribbon .ribbon ng-ribbon-menu .ribbon-menu li:hover {
     background-color: #19478a;
 }
 
-.ribbon ng-ribbon-menu .ribbon-menu-content {
+ng-ribbon .ribbon ng-ribbon-menu .ribbon-menu-content {
     flex: 1;
     padding: 30px;
 }
 
-.ribbon ng-ribbon-menu .ribbon-menu-content ng-ribbon-menu-item {
+ng-ribbon .ribbon ng-ribbon-menu .ribbon-menu-content ng-ribbon-menu-item {
     display: none;
 }
 
-.ribbon ng-ribbon-menu .ribbon-menu-content ng-ribbon-menu-item.selected {
+ng-ribbon .ribbon ng-ribbon-menu .ribbon-menu-content ng-ribbon-menu-item.selected {
     display: block;
 }
 
-.ribbon ng-ribbon-menu .ribbon-menu-content ng-ribbon-menu-separator {
+ng-ribbon .ribbon ng-ribbon-menu .ribbon-menu-content ng-ribbon-menu-separator {
     display: none;
 }
 
 /* Tab Content */
 
-.ribbon ng-ribbon-tab {
+ng-ribbon .ribbon ng-ribbon-tab {
     display: none;
 }
