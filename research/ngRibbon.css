@@ -248,6 +248,7 @@ ng-ribbon .ribbon ng-ribbon-backstage {
     right: 0;
     background-color: white;
     display: none;
+    z-index: 990;
 }
 
 ng-ribbon .ribbon.backstage-open ng-ribbon-backstage {

@@ -188,7 +188,7 @@ angular.module('ngRibbon', ['ngAnimate', 'ngRibbon.menu', 'ngRibbon.utils'])
             controllerAs: 'ribbon',
             bindToController: true,
             link: function (scope, element, attrs, ctrl, transclude) {
-                transclude(scope, function (clone) {
+                transclude(function (clone) {
                     var tabContents = element[0].querySelector('.tab-content');
                     angular.element(tabContents).prepend(clone);
                 });
