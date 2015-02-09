@@ -27,38 +27,107 @@ ng-ribbon .ribbon {
     background-color: white;
     margin-top: 30px;
     font-size: 12px;
+    position: relative;
+    height: 131px;
+    -webkit-transition: height .3s linear .2s;
+    -moz-transition: height .3s linear .2s;
+    -ms-transition: height .3s linear .2s;
+    -o-transition: height .3s linear .2s;
+    transition: height .3s linear .2s;
 }
 
 ng-ribbon .ribbon .tab-content {
-    height: 104px;
+    position: absolute;
+    height: 0;
     width: 100%;
     background-color: white;
-    border-bottom: solid 1px #d6d6d6;
-    -webkit-transition: height .3s ease-in;
-    -moz-transition: height .2s ease-in;
-    -ms-transition: height .2s ease-in;
-    -o-transition: height .2s ease-in;
-    transition: height .2s ease-in;
+    border-bottom: solid 1px transparent;
+    -webkit-transition: height 0s linear;
+    -moz-transition: height 0s linear;
+    -ms-transition: height 0s linear;
+    -o-transition: height 0s linear;
+    transition: height 0s linear, border 0s linear;
+}
+
+ng-ribbon .ribbon .ribbon-collapse {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 29px;
+    height: 17px;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+ng-ribbon .ribbon .ribbon-collapse:hover {
+    background-color: #D5E1F2;
 }
 
 /* Collapsed Ribbon */
 
+ng-ribbon .ribbon.collapsed {
+    transition-delay: 0s;
+    height: 25px;
+}
+
 ng-ribbon .ribbon.collapsed .tabs {
-    border-bottom: none;
+    border-bottom: solid 1px transparent;
+}
+
+ng-ribbon .ribbon.open .tab-content {
+    height: 104px;
+    border-bottom: solid 1px #d6d6d6;
 }
 
 ng-ribbon .ribbon.collapsed .tab-content {
-    height: 0;
-    border-bottom: none;
+    /*position: absolute;*/
 }
 
-ng-ribbon .ribbon .tab-content.float {
-    position: absolute;
+ng-ribbon .ribbon.open-add-active .tab-content {
+    /*position: absolute;*/
+    -webkit-transition: height .3s linear;
+    -moz-transition: height .3s linear;
+    -ms-transition: height .3s linear;
+    -o-transition: height .3s linear;
+    transition: height .3s linear, border 0s linear 0ms;
+}
+
+ng-ribbon .ribbon.open-remove-active .tab-content {
+    -webkit-transition: height 100ms linear;
+    -moz-transition: height 100ms linear;
+    -ms-transition: height 100ms linear;
+    -o-transition: height 100ms linear;
+    transition: height 100ms linear, border 0s linear 50ms;
+}
+
+ng-ribbon .ribbon.collapsed.open .tab-content {
+    transition: height .3s linear, border 0s linear 0ms;
+}
+
+ng-ribbon .ribbon .ribbon-collapse #thumbtack {
+    display: none;
+}
+
+ng-ribbon .ribbon.collapsed .ribbon-collapse {
+    display: none;
+}
+
+ng-ribbon .ribbon.collapsed.open .ribbon-collapse {
+    display: block;
+}
+
+ng-ribbon .ribbon.collapsed .ribbon-collapse #thumbtack {
+    display: block;
+    transform: rotate(90deg);
+}
+
+ng-ribbon .ribbon.collapsed .ribbon-collapse #angle-up {
+    display: none;
 }
 
 /* Tabs Titles */
 
-ng-ribbon .ribbon .tabs {
+ng-ribbon .ribbon.open .tabs {
     border-bottom: solid 1px #d6d6d6;
 }
 
@@ -76,7 +145,7 @@ ng-ribbon .tabs .tab-name {
 }
 
 ng-ribbon .tabs .tab-name.active {
-    border-color:  #d6d6d6;
+    border-color: #d6d6d6;
     border-bottom: solid 1px white;
     color: #2b579a;
     background-color: white;

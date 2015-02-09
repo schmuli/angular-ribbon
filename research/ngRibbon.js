@@ -1,5 +1,5 @@
-angular.module('ngRibbon', ['ngRibbon.menu', 'ngRibbon.utils'])
-    .directive('ngRibbon', function () {
+angular.module('ngRibbon', ['ngAnimate', 'ngRibbon.menu', 'ngRibbon.utils'])
+    .directive('ngRibbon', function (clickHandler) {
         function ContextualGroup(parent, title, color) {
             this.parent = parent;
             this.title = title;
@@ -32,8 +32,8 @@ angular.module('ngRibbon', ['ngRibbon.menu', 'ngRibbon.utils'])
             hasActive: {
                 get: function () {
                     return this.tabs.filter(function (tab) {
-                        return tab.active;
-                    }).length > 0;
+                            return tab.active;
+                        }).length > 0;
                 }
             },
             onVisibleChanged: {
@@ -47,13 +47,51 @@ angular.module('ngRibbon', ['ngRibbon.menu', 'ngRibbon.utils'])
             }
         });
 
-        function RibbonController(scope, document, contextualColors) {
+        function RibbonController(scope, element, document, contextualColors) {
             this.scope = scope;
+            this.element = element;
             this.document = document;
             this.contextualColors = contextualColors;
             this.tabs = [];
             this.contextualGroups = [];
             this._collapsed = false;
+        }
+
+        function activate(tab) {
+            if (this.activeTab) {
+                if (this.activeTab === tab) {
+                    if (this._collapsed) {
+                        this.clearActiveTab();
+                    }
+                    return;
+                }
+                this.clearActiveTab();
+            }
+
+            if (!tab) {
+                tab = this.tabs[0];
+            }
+
+            this.activeTab = tab;
+            this.activeTab.active = true;
+
+            if (this._collapsed) {
+                this.globalClearActiveTab();
+            }
+        }
+
+        function toggleCollapse(tab) {
+            if (tab && !this._collapsed && !tab.active) {
+                activate.call(this, tab);
+                return;
+            }
+
+            this._collapsed = !this._collapsed;
+            if (this._collapsed) {
+                this.clearActiveTab();
+            } else if (tab && !tab.active) {
+                activate.call(this, tab);
+            }
         }
 
         Object.defineProperties(RibbonController.prototype, {
@@ -64,44 +102,19 @@ angular.module('ngRibbon', ['ngRibbon.menu', 'ngRibbon.utils'])
             },
             collapsed: {
                 get: function () {
-                    return this._collapsed && !this.activeTab;
+                    return this._collapsed;
                 }
             },
-            toggleCollapse: {
-                value: function () {
-                    this._collapsed = !this._collapsed;
-                    if (this._collapsed) {
-                        this.clearActiveTab();
-                    }
+            hasActiveTab: {
+                get: function () {
+                    return !!this.activeTab;
                 }
             },
             activate: {
-                //http://stackoverflow.com/questions/5497073/how-to-differentiate-single-click-event-and-double-click-event
-                //http://stackoverflow.com/questions/20444409/handling-ng-click-and-ng-dblclick-on-the-same-element-with-angularjs
-                value: function (tab, e) {
-                    if (this.activeTab) {
-                        if (this.activeTab === tab) {
-                            if (this._collapsed) {
-                                this.clearActiveTab();
-                            }
-                            return;
-                        }
-                        this.clearActiveTab();
-                    }
-
-                    if (!tab) {
-                        tab = this.tabs[0];
-                    }
-
-                    this.activeTab = tab;
-                    this.activeTab.active = true;
-
-                    if (this._collapsed) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        this.globalClearActiveTab();
-                    }
-                }
+                value: clickHandler(activate, toggleCollapse)
+            },
+            toggleCollapse: {
+                value: toggleCollapse
             },
             globalClearActiveTab: {
                 value: function () {
@@ -110,9 +123,12 @@ angular.module('ngRibbon', ['ngRibbon.menu', 'ngRibbon.utils'])
                     }
                     this.globalRegistered = true;
                     var _this = this;
-                    this.document.one('click', function () {
-                        _this.clearActiveTab();
+                    this.document.one('click', function (e) {
                         _this.globalRegistered = false;
+                        if (_this.element[0].contains(e.target)) {
+                            return;
+                        }
+                        _this.clearActiveTab();
                         _this.scope.$digest();
                     });
                 }
@@ -168,9 +184,15 @@ angular.module('ngRibbon', ['ngRibbon.menu', 'ngRibbon.utils'])
             },
             transclude: true,
             templateUrl: 'ribbon.html',
-            controller: ['$scope', '$document', 'contextualColors', RibbonController],
+            controller: ['$scope', '$element', '$document', 'contextualColors', RibbonController],
             controllerAs: 'ribbon',
-            bindToController: true
+            bindToController: true,
+            link: function (scope, element, attrs, ctrl, transclude) {
+                transclude(scope, function (clone) {
+                    var tabContents = element[0].querySelector('.tab-content');
+                    angular.element(tabContents).prepend(clone);
+                });
+            }
         };
     })
     .directive('ngRibbonTitle', function (optimizedResize) {
@@ -399,5 +421,55 @@ angular.module('ngRibbon.utils', [])
             });
 
             running = false;
+        }
+    })
+    .factory('clickHandler', function ($timeout) {
+        return function (onClick, onDoubleClick) {
+            //var action = firstClick;
+            //var timerPromise;
+            //var ignoreSecondClick = false;
+            //
+            //function firstClick() {
+            //    ignoreSecondClick = onClick && onClick.apply(this, arguments);
+            //
+            //    action = secondClick;
+            //
+            //    timerPromise = $timeout(function () {
+            //        action = firstClick;
+            //    }, 200);
+            //}
+            //
+            //function secondClick() {
+            //    if (!ignoreSecondClick) {
+            //        onDoubleClick && onDoubleClick.apply(this, arguments);
+            //    }
+            //
+            //    action = firstClick;
+            //    timerPromise && $timeout.cancel(timerPromise);
+            //}
+            //
+            //return function () {
+            //    action.apply(this, arguments);
+            //}
+            var index = 0;
+            var clicks = 0;
+            return function () {
+                clicks++;
+
+                var args = arguments;
+                var _this = this;
+                if (clicks === 1) {
+                    $timeout(function () {
+                        if (clicks == 1) {
+                            console.log('click ' + index++);
+                            onClick.apply(_this, args);
+                        } else {
+                            console.log('double click ' + index++);
+                            onDoubleClick.apply(_this, args);
+                        }
+                        clicks = 0;
+                    }, 200);
+                }
+            }
         }
     });

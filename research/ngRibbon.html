@@ -64,7 +64,8 @@
     <button ng-click="app.toggleContext('photo')">Photo</button>
 </div>
 
-<script src="../bower_components/angularjs/angular.js"></script>
+<script src="../bower_components/angular/angular.js"></script>
+<script src="../bower_components/angular-animate/angular-animate.js"></script>
 <script src="ngRibbon.js"></script>
 
 <script>
@@ -85,7 +86,7 @@
 <script id="ribbon.html" type="text/ng-template">
     <ng-ribbon-title data-title="ribbon.title"></ng-ribbon-title>
     <div class="ribbon"
-         ng-class="{ 'backstage-open': ribbon.backstage.isOpen, 'collapsed': ribbon.collapsed }">
+         ng-class="{ 'backstage-open': ribbon.backstage.isOpen, 'collapsed': ribbon.collapsed, 'open': ribbon.hasActiveTab }">
         <div class="tabs">
             <div ng-if="ribbon.hasBackstage"
                  class="tab-name backstage"
@@ -95,8 +96,7 @@
             <div class="tab-name"
                  ng-repeat="tab in ribbon.tabs"
                  ng-class="{ 'active': tab.active }"
-                 ng-click="ribbon.activate(tab, $event)"
-                 ng-dblclick="ribbon.toggleCollapse()">
+                 ng-click="ribbon.activate(tab, $event)">
                 {{ tab.title }}
             </div>
             <div class="contextual-group ng-class:group.color"
@@ -107,13 +107,22 @@
                 <div class="tab-name"
                      ng-repeat="tab in group.tabs"
                      ng-class="{ 'active': tab.active }"
-                     ng-click="ribbon.activate(tab, $event)"
-                     ng-dblclick="ribbon.toggleCollapse()">
+                     ng-click="ribbon.activate(tab, $event)">
                     {{ tab.title }}
                 </div>
             </div>
         </div>
-        <div class="tab-content" ng-class="{ 'float': ribbon._collapsed }" ng-transclude=""></div>
+        <div class="tab-content">
+            <div class="ribbon-collapse" ng-click="ribbon.toggleCollapse()">
+                <svg id="angle-up" width="29" height="17" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+                    <polyline points="15,30 25,20 35,30" stroke="#777777" fill="transparent" stroke-width="5"/>
+                </svg>
+                <svg id="thumbtack" width="29px" height="17px" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg" >
+                    <path fill="#777777" d="M32.333,25.207h-5.115l-2.217,14.252l-2.22-14.252h-5.114c0.726-1.232,1.648-2.262,2.7-3.047v-8.244h-1.323v-3.375h1.323h9.267h1.322v3.375h-1.324v8.244C30.684,22.945,31.607,23.975,32.333,25.207z"/>
+                </svg>
+            </div>
+        </div>
+
     </div>
 </script>
 
