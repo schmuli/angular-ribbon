@@ -76,7 +76,7 @@ ng-ribbon .ribbon.collapsed .tabs {
 
 ng-ribbon .ribbon.open .tab-content {
     height: 104px;
-    border-bottom: solid 1px #d6d6d6;
+    border-bottom: solid 1px #d5d5d5;
 }
 
 ng-ribbon .ribbon.collapsed .tab-content {
@@ -128,7 +128,7 @@ ng-ribbon .ribbon.collapsed .ribbon-collapse #angle-up {
 /* Tabs Titles */
 
 ng-ribbon .ribbon.open .tabs {
-    border-bottom: solid 1px #d6d6d6;
+    border-bottom: solid 1px #d4d4d4;
 }
 
 ng-ribbon .tabs .tab-name {
@@ -145,7 +145,7 @@ ng-ribbon .tabs .tab-name {
 }
 
 ng-ribbon .tabs .tab-name.active {
-    border-color: #d6d6d6;
+    border-color: #d4d4d4;
     border-bottom: solid 1px white;
     color: #2b579a;
     background-color: white;
@@ -340,6 +340,122 @@ ng-ribbon .ribbon ng-ribbon-menu .ribbon-menu-content ng-ribbon-menu-separator {
 
 /* Tab Content */
 
-ng-ribbon .ribbon ng-ribbon-tab {
-    display: none;
+ng-ribbon .ribbon .tab-content > [ng-transclude] {
+    display: flex;
+    height: 100%;
+    margin-right: 30px;
+}
+
+ng-ribbon .ribbon .tab-content ng-ribbon-group {
+    display: flex;
+    flex-direction: column;
+    margin: 3px 0;
+    border-right: solid 1px #E1E1E1;
+}
+
+ng-ribbon .ribbon .tab-content ng-ribbon-group [ng-transclude] {
+    flex: 1;
+    padding: 7px 7px 0 7px;
+    display: flex;
+}
+
+ng-ribbon .ribbon .tab-content ng-ribbon-group .group-label {
+    text-align: center;
+    color: #666666;
+}
+
+/* Ribbon Actions */
+
+ng-ribbon .button {
+    min-width: 36px;
+    max-width: 57px;
+    cursor: pointer;
+    border: solid 1px transparent;
+    box-sizing: border-box;
+}
+
+ng-ribbon .button.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+ng-ribbon .large-button {
+    padding: 2px;
+}
+
+ng-ribbon .large-button:hover {
+    background-color: #D5E1F2;
+}
+
+ng-ribbon .large-button:active {
+    background-color: #C2D5F2;
+}
+
+ng-ribbon .button img {
+    min-widtH: 28px;
+    max-width: 36px;
+    min-height: 28px;
+    max-height: 33px;
+    display: block;
+    margin: 0 auto;
+}
+
+ng-ribbon .large-button > div {
+    text-align: center;
+    overflow: hidden;
+    max-width: 51px;
+}
+
+ng-ribbon .large-button > img {
+    margin-bottom: 5px;
+}
+
+ng-ribbon .split-button {
+    display: flex;
+    flex-direction: column;
+}
+
+ng-ribbon .split-button:hover {
+    border-color: #D5E1F2;
+}
+
+ng-ribbon .split-button:active {
+    border-color: #C2D5F2;
+}
+
+ng-ribbon .split-button .image {
+    padding: 2px 0;
+}
+
+ng-ribbon .split-button img {
+    margin-bottom: 3px;
+}
+
+ng-ribbon .split-button .title {
+    flex: 1;
+    text-align: center;
+}
+
+ng-ribbon .split-button .title > svg {
+    vertical-align: super;
+}
+
+ng-ribbon .split-button .image:hover,
+ng-ribbon .split-button .title:hover {
+    background-color: #D5E1F2;
+}
+
+ng-ribbon .split-button.open .image,
+ng-ribbon .split-button.open .title,
+ng-ribbon .split-button .image:active,
+ng-ribbon .split-button .title:active {
+    background-color: #C2D5F2;
+}
+
+ng-ribbon .split-button ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    border: solid 1px black;
 }

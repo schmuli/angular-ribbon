@@ -55,11 +55,12 @@ Each action is a directive that can handle itself: layout, linebreaks.
 6. User Settings
 7. Actions
 	1. Large Button
-	1. Small Button
-	1. Button Groups
-	2. Split Button
-	3. Separator
-	4. Gallery
+	1. Small Button (vNext)
+	1. Button Group (vNext)
+	1. Drop Button - Custom Content
+	2. Split Button - Custom Content
+	3. Separator (vNext)
+	4. Gallery (vNext)
 8. Commands
 	1. Contextual Commands
 9. Declarative
