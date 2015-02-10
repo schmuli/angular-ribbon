@@ -353,13 +353,13 @@ ng-ribbon .ribbon .tab-content ng-ribbon-group {
     border-right: solid 1px #E1E1E1;
 }
 
-ng-ribbon .ribbon .tab-content ng-ribbon-group [ng-transclude] {
+ng-ribbon .ribbon .tab-content ng-ribbon-group > [ng-transclude] {
     flex: 1;
     padding: 7px 7px 0 7px;
     display: flex;
 }
 
-ng-ribbon .ribbon .tab-content ng-ribbon-group .group-label {
+ng-ribbon .ribbon .tab-content ng-ribbon-group > .group-label {
     text-align: center;
     color: #666666;
 }
@@ -392,7 +392,7 @@ ng-ribbon .large-button:active {
 }
 
 ng-ribbon .button img {
-    min-widtH: 28px;
+    min-width: 28px;
     max-width: 36px;
     min-height: 28px;
     max-height: 33px;
@@ -400,7 +400,7 @@ ng-ribbon .button img {
     margin: 0 auto;
 }
 
-ng-ribbon .large-button > div {
+ng-ribbon .large-button > .title {
     text-align: center;
     overflow: hidden;
     max-width: 51px;
@@ -437,7 +437,13 @@ ng-ribbon .split-button .title {
 }
 
 ng-ribbon .split-button .title > svg {
-    vertical-align: super;
+    display: block;
+    margin: 6px auto 0;
+}
+
+ng-ribbon .split-button .title > .multiline + svg {
+    display: inline;
+    vertical-align: top;
 }
 
 ng-ribbon .split-button .image:hover,
@@ -452,10 +458,15 @@ ng-ribbon .split-button .title:active {
     background-color: #C2D5F2;
 }
 
-ng-ribbon .split-button ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+ng-ribbon .button .ribbon-popup {
+    display: none;
     position: absolute;
     border: solid 1px black;
+    background-color: white;
+    min-width: 57px;
+    max-width: 200px;
+}
+
+ng-ribbon .button.open .ribbon-popup {
+    display: block;
 }

@@ -14,7 +14,7 @@
         }
 
         .main-content {
-            padding: 30px;
+            padding: 0 30px;
         }
 
         .ng-cloak {
@@ -43,15 +43,23 @@
             <ng-large-button command="ShowTimelineView"></ng-large-button>
             <ng-large-button command="ShowMapView"></ng-large-button>
             <ng-large-button command="ShowDataTablesView"></ng-large-button>
-            <ng-split-button command="ShowMutualLinksView"></ng-split-button>
+            <ng-split-button command="ShowMutualLinksView">
+                Split Button popup, can be anything!                
+            </ng-split-button>
         </ng-ribbon-group>
         <ng-ribbon-group data-title="'Report'">
             <ng-large-button command="GenerateReport"></ng-large-button>
         </ng-ribbon-group>
         <ng-ribbon-group data-title="'Watch Lists'">
-            <ng-split-button command="ShowWatchlistManagement"></ng-split-button>
+            <ng-split-button command="ShowWatchlistManagement">
+                Split Button popup, can be anything!
+            </ng-split-button>
         </ng-ribbon-group>
-        <ng-ribbon-group data-title="'Tagging'"></ng-ribbon-group>
+        <ng-ribbon-group data-title="'Tagging'">
+            <ng-drop-button command="">
+                Drop Button popup, can be anything!
+            </ng-drop-button>
+        </ng-ribbon-group>
     </ng-ribbon-tab>
     <ng-ribbon-tab data-title="'Insert'"></ng-ribbon-tab>
     <ng-ribbon-tab data-title="'Context'" contextual="table"></ng-ribbon-tab>
@@ -60,8 +68,14 @@
 </ng-ribbon>
 
 <div class="main-content">
-    <button ng-click="app.toggleContext('table')">Table</button>
-    <button ng-click="app.toggleContext('photo')">Photo</button>
+    <p>
+        <button ng-click="app.toggleContext('table')">Table</button>
+        <button ng-click="app.toggleContext('photo')">Photo</button>
+    </p>
+    <p>
+        <button ng-click="app.ribbonContext.commands.ShowMutualLinksView.disabled = true">Disable Links</button>
+        <button ng-click="app.ribbonContext.commands.ShowMutualLinksView.disabled = false">Enable Links</button>
+    </p>
 </div>
 
 <script src="../bower_components/angular/angular.js"></script>
@@ -103,16 +117,7 @@
                             title: 'Mutual Links',
                             action: function () {
                                 alert('Mutual Links');
-                            },
-                            includeInCommands: true,
-                            commands: [
-                                {
-                                    title: 'All Links',
-                                    action: function () {
-                                        alert('All Links');
-                                    }
-                                }
-                            ]
+                            }
                         },
                         ShowWatchlistManagement: {
                             title: 'Activate'
@@ -207,26 +212,41 @@
          ng-click="button.execute()"
          ng-show="button.visible">
         <img ng-src="{{ button.image }}"/>
-        <div>{{ button.title }}</div>
+        <div class="title">{{ button.title }}</div>
     </div>
 </script>
 
 <script id="ribbon-split-button.html" type="text/ng-template">
-    <div class="button split-button" ng-class="{ 'open': button.opened }">
+    <div class="button split-button" 
+         ng-class="{ disabled: button.disabled, 'open': button.opened }"
+         ng-show="button.visible">
         <div class="image" ng-click="button.execute()">
             <img ng-src="{{ button.image }}"/>
         </div>
-        <div class="title" ng-click="button.open($event)">
-            {{ button.title }}
+        <div class="title" 
+             ng-click="button.open($event)">
+            <span ng-is-multiline="">{{ button.title }}</span>
             <svg width="5px" height="3px">
                 <path d="M0,0L2.5,3L5,0" />
             </svg>
         </div>
-        <ul ng-show="button.opened">
-            <li ng-repeat="command in button.command.commands">
-                {{ command.title }}
-            </li>
-        </ul>
+        <div class="ribbon-popup" ng-transclude=""></div>
+    </div>
+</script>
+
+<script id="ribbon-drop-button.html" type="text/ng-template">
+    <div class="button drop-button" 
+         ng-class="{ 'disabled': button.disabled, 'open': button.opened }"
+         ng-click="button.open()"
+         ng-show="button.visible">
+        <img ng-src="{{ button.image }}"/>
+        <div class="title">
+            <span ng-is-multiline="">{{ button.title }}</span>
+            <svg width="5px" height="3px">
+                <path d="M0,0L2.5,3L5,0" />
+            </svg>
+        </div>
+        <div class="ribbon-popup" ng-transclude=""></div>
     </div>
 </script>
 

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body {
+    font-family: 'Segoe UI', Arial, Verdana, sans-serif;
+}
+div {
+    font-size: 12px;
+    background-color: red;
+    color: white;
+    max-width: 57px;
+    text-align: center;
+}
+
+</style>
+</head>
+<body>
+<div>
+    <span>Activate 123</span>
+    <span>More </span>
+</div>
+<script>
+    var el = document.querySelector('div > span');
+    var rects = el.getClientRects();
+    console.log(rects);
+</script>
+</body>
+</html>

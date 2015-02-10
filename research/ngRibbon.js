@@ -396,46 +396,86 @@ angular.module('ngRibbon.menu', [])
         };
     });
 
+(function (ng) {
+
+function LargeButtonController() {
+}
+
+Object.defineProperties(LargeButtonController.prototype, {
+    setCommand: {
+        value: function (command) {
+            this.command = command;
+        }
+    },
+    visible: {
+        get: function () {
+            return !!this.command && (!this.command.hasOwnProperty('visible') || this.command.visible);
+        }
+    },
+    disabled: {
+        get: function () {
+            return !!this.command && this.command.disabled;
+        }
+    },
+    title: {
+        get: function () {
+            return !!this.command ? this.command.title : '';
+        }
+    },
+    image: {
+        get: function () {
+            return !!this.command ? this.command.image : '';
+        }
+    },
+    execute: {
+        value: function () {
+            if (this.command.action) {
+                this.command.action(this.command.title);
+            }
+        }
+    }
+});
+    
+function SplitButtonController(scope, document) {
+    this.scope = scope;
+    this.document = document;
+}
+SplitButtonController.prototype = Object.create(LargeButtonController.prototype);
+
+SplitButtonController.EmptyCommands = [];
+Object.defineProperties(SplitButtonController.prototype, {
+    opened: {
+        get: function () {
+            return this.visible && !this.disabled && this._opened;
+        }
+    },
+    open: {
+        value: function (e) {
+            e.stopPropagation();
+
+            if (this._opened) {
+                this._opened = false;
+                return;
+            }
+
+            this._opened = true;
+            
+            if (this.command.autoClose === false) {
+                return;
+            }
+
+            this.document.one('click', function () {
+                this._opened = false;
+                this.scope.$digest();
+            }.bind(this));
+        }
+    }
+});
+
+var DropButtonController = SplitButtonController;
+    
 angular.module('ngRibbon.actions', [])
     .directive('ngLargeButton', function () {
-        function LargeButtonController() {
-        }
-
-        Object.defineProperties(LargeButtonController.prototype, {
-            setCommand: {
-                value: function (command) {
-                    this.command = command;
-                }
-            },
-            visible: {
-                get: function () {
-                    return !!this.command && (!this.command.hasOwnProperty('visible') || this.command.visible);
-                }
-            },
-            disabled: {
-                get: function () {
-                    return this.command.disabled;
-                }
-            },
-            title: {
-                get: function () {
-                    return this.command.title;
-                }
-            },
-            image: {
-                get: function () {
-                    return !!this.command ? this.command.image : '';
-                }
-            },
-            execute: {
-                value: function () {
-                    if (this.command.action) {
-                        this.command.action(this.command.title);
-                    }
-                }
-            }
-        });
-
         return {
             scope: {
                 command: '@'
@@ -455,72 +495,16 @@ angular.module('ngRibbon.actions', [])
             }
         };
     })
-    .directive('ngSplitButton', function ($document) {
-        function SplitButtonController(scope) {
-            this.scope = scope;
-        }
-
-        Object.defineProperties(SplitButtonController.prototype, {
-            setCommand: {
-                value: function (command) {
-                    this.command = command;
-                }
-            },
-            visible: {
-                get: function () {
-                    return !!this.command && (!this.command.hasOwnProperty('visible') || this.command.visible);
-                }
-            },
-            disabled: {
-                get: function () {
-                    return this.command.disabled;
-                }
-            },
-            title: {
-                get: function () {
-                    return this.command.title;
-                }
-            },
-            image: {
-                get: function () {
-                    return !!this.command ? this.command.image : '';
-                }
-            },
-            execute: {
-                value: function () {
-                    if (this.command.action) {
-                        this.command.action(this.command.title);
-                    }
-                }
-            },
-            open: {
-                value: function (e) {
-                    e.stopPropagation();
-
-                    if (this.opened) {
-                        this.opened = false;
-                        return;
-                    }
-
-                    this.opened = true;
-
-                    var _this = this;
-                    $document.one('click', function () {
-                        _this.opened = false;
-                        _this.scope.$digest();
-                    });
-                }
-            }
-        });
-
+    .directive('ngSplitButton', function () {
         return {
             scope: {
                 command: '@'
             },
-            controller: ['$scope', SplitButtonController],
+            controller: ['$scope', '$document', SplitButtonController],
             controllerAs: 'button',
             require: ['^ngRibbon', 'ngSplitButton'],
             templateUrl: 'ribbon-split-button.html',
+            transclude: true,
             replace: true,
             link: function (scope, element, attrs, ctrls) {
                 var ribbonController = ctrls[0];
@@ -534,9 +518,27 @@ angular.module('ngRibbon.actions', [])
     })
     .directive('ngDropButton', function () {
         return {
-
+            scope: {
+                command: '@'
+            },
+            require: ['^ngRibbon', 'ngDropButton'],
+            templateUrl: 'ribbon-drop-button.html',
+            transclude: true,
+            replace: true,
+            controller: ['$scope', '$document', DropButtonController],
+            controllerAs: 'button',
+            link: function (scope, element, attrs, ctrls) {
+                var ribbonController = ctrls[0];
+                var command = ribbonController.getCommand(scope.command);
+                if (command) {
+                    var dropButtonController = ctrls[1];
+                    dropButtonController.setCommand(command);
+                }
+            }
         }
     });
+
+}(angular));
 
 angular.module('ngRibbon.utils', [])
     .factory('optimizedResize', function ($window) {
@@ -577,6 +579,7 @@ angular.module('ngRibbon.utils', [])
     })
     .factory('clickHandler', function ($timeout) {
         return function (onClick, onDoubleClick) {
+            /*
             //var action = firstClick;
             //var timerPromise;
             //var ignoreSecondClick = false;
@@ -603,6 +606,7 @@ angular.module('ngRibbon.utils', [])
             //return function () {
             //    action.apply(this, arguments);
             //}
+            */
             var index = 0;
             var clicks = 0;
             return function () {
@@ -622,4 +626,13 @@ angular.module('ngRibbon.utils', [])
                 }
             }
         }
+    })
+    .directive('ngIsMultiline', function () {
+        return function link(scope, element) {
+            setTimeout(function () {
+                if (element[0].getClientRects().length > 1) {
+                    element.addClass('multiline');
+                }
+            });
+        };
     });
