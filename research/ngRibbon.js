@@ -237,7 +237,7 @@ angular.module('ngRibbon', ['ngAnimate', 'ngRibbon.menu', 'ngRibbon.utils', 'ngR
                 title: '='
             },
             require: '^ngRibbon',
-            template: '<div ng-style="position()">{{ title }}</div>',
+            templateUrl: 'ribbon-title.html',
             link: function (scope, element) {
                 var titleElement = element.find('div');
 
