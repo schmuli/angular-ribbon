@@ -247,12 +247,38 @@ ng-ribbon .ribbon ng-ribbon-backstage {
     bottom: 0;
     right: 0;
     background-color: white;
-    display: none;
     z-index: 990;
+    transform: translateX(-100%);
+}
+
+ng-ribbon .ribbon.backstage-open-remove-active  ng-ribbon-backstage {
+    animation: backstage-out 100ms linear;
 }
 
 ng-ribbon .ribbon.backstage-open ng-ribbon-backstage {
-    display: block;
+    transform: translateX(0);
+}
+
+ng-ribbon .ribbon.backstage-open-add ng-ribbon-backstage {
+    animation: backstage-in 100ms linear;
+}
+
+@keyframes backstage-in {
+    from {
+        transform: translateX(-75px);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+@keyframes backstage-out {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-75px);
+    }
 }
 
 ng-ribbon .ribbon ng-ribbon-backstage .backstage-close {
@@ -368,6 +394,7 @@ ng-ribbon .ribbon .tab-content ng-ribbon-group > [ng-transclude] {
 ng-ribbon .ribbon .tab-content ng-ribbon-group > .group-label {
     text-align: center;
     color: #666666;
+    padding: 0 2px;
 }
 
 /* Ribbon Actions */
