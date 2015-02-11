@@ -43,25 +43,22 @@
             <ng-large-button command="ShowTimelineView"></ng-large-button>
             <ng-large-button command="ShowMapView"></ng-large-button>
             <ng-large-button command="ShowDataTablesView"></ng-large-button>
-            <ng-split-button command="ShowMutualLinksView">
-                Split Button popup, can be anything!                
-            </ng-split-button>
+            <ng-split-button command="ShowMutualLinksView" popup="popup.html"></ng-split-button>
         </ng-ribbon-group>
         <ng-ribbon-group data-title="'Report'">
             <ng-large-button command="GenerateReport"></ng-large-button>
         </ng-ribbon-group>
         <ng-ribbon-group data-title="'Watch Lists'">
-            <ng-split-button command="ShowWatchlistManagement">
-                Split Button popup, can be anything!
-            </ng-split-button>
+            <ng-split-button command="ShowWatchlistManagement" popup="popup.html"></ng-split-button>
         </ng-ribbon-group>
         <ng-ribbon-group data-title="'Tagging'">
-            <ng-drop-button command="">
-                Drop Button popup, can be anything!
-            </ng-drop-button>
+            <ng-drop-button command="DropButton" popup="popup.html"></ng-drop-button>
+            <ng-drop-button command="DropButton2" popup="popup1.html"></ng-drop-button>
         </ng-ribbon-group>
     </ng-ribbon-tab>
-    <ng-ribbon-tab data-title="'Insert'"></ng-ribbon-tab>
+    <ng-ribbon-tab data-title="'Insert'">
+        <ng-ribbon-group data-title="'Pages'"></ng-ribbon-group>
+    </ng-ribbon-tab>
     <ng-ribbon-tab data-title="'Context'" contextual="table"></ng-ribbon-tab>
     <ng-ribbon-tab data-title="'Photo 1'" contextual="photo"></ng-ribbon-tab>
     <ng-ribbon-tab data-title="'Photo 2'" contextual="photo"></ng-ribbon-tab>
@@ -71,12 +68,56 @@
     <p>
         <button ng-click="app.toggleContext('table')">Table</button>
         <button ng-click="app.toggleContext('photo')">Photo</button>
+        <button ng-click="app.toggleContext('dynamic')">Dynamic</button>
     </p>
     <p>
-        <button ng-click="app.ribbonContext.commands.ShowMutualLinksView.disabled = true">Disable Links</button>
-        <button ng-click="app.ribbonContext.commands.ShowMutualLinksView.disabled = false">Enable Links</button>
+        <button ng-click="app.commands.toggle('ShowMutualLinksView')">Toggle Links</button>
     </p>
 </div>
+
+<script id="popup.html" type="text/ng-template">
+    <div>Split Button popup, can contain anything!</div>
+</script>
+
+<script id="popup1.html" type="text/ng-template">
+    <div style="width: 200px;" ng-click="$event.stopPropagation()">
+        Context in Popup
+        <br/>
+        {{ button.command }}
+        <div>
+            <button ng-click="button.close()">Close</button>
+        </div>
+    </div>
+</script>
+
+<script id="dynamic-tab.html" type="text/ng-template">
+    <ng-ribbon-tab data-title="'Dynamic'">
+        <ng-ribbon-group data-title="'Tabs 1'">
+            <ng-large-button command="ShowTimelineView"></ng-large-button>
+            <ng-large-button command="ShowMapView"></ng-large-button>
+            <ng-large-button command="ShowDataTablesView"></ng-large-button>
+            <ng-split-button command="ShowMutualLinksView" popup="popup.html"></ng-split-button>
+        </ng-ribbon-group>
+        <ng-ribbon-group data-title="'Report 1'">
+            <ng-large-button command="GenerateReport"></ng-large-button>
+        </ng-ribbon-group>
+        <ng-ribbon-group data-title="'Watch Lists 1'">
+            <ng-split-button command="ShowWatchlistManagement" popup="popup.html"></ng-split-button>
+        </ng-ribbon-group>
+        <ng-ribbon-group data-title="'Tagging 1'">
+            <ng-drop-button command="DropButton" popup="popup.html"></ng-drop-button>
+            <ng-drop-button command="DropButton2" popup="popup.html"></ng-drop-button>
+        </ng-ribbon-group>
+    </ng-ribbon-tab>
+</script>
+
+<script id="dynamic-contextual-tab.html" type="text/ng-template">
+    <ng-ribbon-tab data-title="'Dynamic 2'" contextual="dynamic"></ng-ribbon-tab>
+</script>
+
+<script id="dynamic-contextual-tab-2.html" type="text/ng-template">
+    <ng-ribbon-tab data-title="'Dynamic 3'" contextual="table"></ng-ribbon-tab>
+</script>
 
 <script src="../bower_components/angular/angular.js"></script>
 <script src="../bower_components/angular-animate/angular-animate.js"></script>
@@ -84,50 +125,115 @@
 
 <script>
     angular.module('RibbonApp', ['ngRibbon'])
-            .controller('AppController', function () {
+            .controller('AppController', function (commands) {
                 this.alert = function (item) {
                     alert('Called from Menu Item: ' + item);
                 };
 
+                this.commands = commands;
                 this.ribbonContext = {
-                    commands: {
-                        ShowTimelineView: {
-                            title: 'Timeline',
-                            action: function () {
-                                alert('Timeline');
-                            }
-                        },
-                        ShowMapView: {
-                            title: 'Map',
-                            action: function () {
-                                alert('Map');
-                            }
-                        },
-                        ShowDataTablesView: {
-                            title: 'Data Tables',
-                            action: function () {
-                                alert('Data Tables');
-                            }
-                        },
-                        GenerateReport: {
-                            title: 'Generate Report',
-                            disabled: true
-                        },
-                        ShowMutualLinksView: {
-                            title: 'Mutual Links',
-                            action: function () {
-                                alert('Mutual Links');
-                            }
-                        },
-                        ShowWatchlistManagement: {
-                            title: 'Activate'
-                        }
-                    }
+                    commands: commands.get()
                 };
 
                 this.toggleContext = function (group) {
                     this.ribbonContext[group] = !this.ribbonContext[group];
                 }
+            })
+            .factory('commands', function () {
+                var commands = {
+                    ShowTimelineView: {
+                        title: 'Timeline',
+                        action: function () {
+                            alert('Timeline');
+                        }
+                    },
+                    ShowMapView: {
+                        title: 'Map',
+                        action: function () {
+                            alert('Map');
+                        }
+                    },
+                    ShowDataTablesView: {
+                        title: 'Data Tables',
+                        action: function () {
+                            alert('Data Tables');
+                        }
+                    },
+                    GenerateReport: {
+                        title: 'Generate Report',
+                        disabled: true
+                    },
+                    ShowMutualLinksView: {
+                        title: 'Mutual Links',
+                        action: function () {
+                            alert('Mutual Links');
+                        }
+                    },
+                    ShowWatchlistManagement: {
+                        title: 'Activate',
+                        action: function () {
+                            alert('Activate');
+                        }
+                    },
+                    DropButton: {
+                        title: 'Drop Button'
+                    },
+                    DropButton2: {
+                        title: 'Drop',
+                        autoClose: false
+                    },
+                    DynamicCommand: {
+                        title: 'Dynamic',
+                        action: function () {
+                            alert('Dynamic Command');
+                        }
+                    }
+                };
+
+                var toggle = function (commandName, disabled) {
+                    var command = commands[commandName];
+                    if (!command) {
+                        return;
+                    }
+                    disabled = disabled === undefined ? !command.disabled : disabled;
+                    command.disabled = disabled;
+                };
+
+                return {
+                    get: function () {
+                        return commands;
+                    },
+                    add: function (name, command) {
+                        commands[name] = command;
+                    },
+                    enable: function (commandName) {
+                        toggle(commandName, false);
+                    },
+                    disable: function (commandName) {
+                        toggle(commandName, true);
+                    },
+                    toggle: function (commandName) {
+                        toggle(commandName);
+                    }
+                }
+            })
+            .config(function (dynamicRibbonProvider) {
+                dynamicRibbonProvider.registerTab('dynamic-tab.html');
+                dynamicRibbonProvider.registerTab('dynamic-contextual-tab.html');
+                dynamicRibbonProvider.registerTab('dynamic-contextual-tab-2.html');
+                dynamicRibbonProvider.registerCommand({
+                    tab: 'Home',
+                    group: 'Tabs',
+                    command: 'DynamicCommand',
+                    popup: 'popup.html',
+                    type: 'split-button'
+                });
+                dynamicRibbonProvider.registerCommand({
+                    tab: 'Dynamic',
+                    group: 'Tabs 1',
+                    command: 'DynamicCommand',
+                    type: 'large-button'
+                });
             });
 </script>
 
@@ -212,41 +318,43 @@
          ng-click="button.execute()"
          ng-show="button.visible">
         <img ng-src="{{ button.image }}"/>
+
         <div class="title">{{ button.title }}</div>
     </div>
 </script>
 
 <script id="ribbon-split-button.html" type="text/ng-template">
-    <div class="button split-button" 
+    <div class="button split-button"
          ng-class="{ disabled: button.disabled, 'open': button.opened }"
          ng-show="button.visible">
         <div class="image" ng-click="button.execute()">
             <img ng-src="{{ button.image }}"/>
         </div>
-        <div class="title" 
+        <div class="title"
              ng-click="button.open($event)">
             <span ng-is-multiline="">{{ button.title }}</span>
             <svg width="5px" height="3px">
-                <path d="M0,0L2.5,3L5,0" />
+                <path d="M0,0L2.5,3L5,0"/>
             </svg>
         </div>
-        <div class="ribbon-popup" ng-transclude=""></div>
+        <div class="ribbon-popup" ng-include="button.popupUrl"></div>
     </div>
 </script>
 
 <script id="ribbon-drop-button.html" type="text/ng-template">
-    <div class="button drop-button" 
+    <div class="button drop-button"
          ng-class="{ 'disabled': button.disabled, 'open': button.opened }"
-         ng-click="button.open()"
+         ng-click="button.open($event)"
          ng-show="button.visible">
         <img ng-src="{{ button.image }}"/>
+
         <div class="title">
             <span ng-is-multiline="">{{ button.title }}</span>
             <svg width="5px" height="3px">
-                <path d="M0,0L2.5,3L5,0" />
+                <path d="M0,0L2.5,3L5,0"/>
             </svg>
         </div>
-        <div class="ribbon-popup" ng-transclude=""></div>
+        <div class="ribbon-popup" ng-include="button.popupUrl"></div>
     </div>
 </script>
 

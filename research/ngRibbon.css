@@ -340,7 +340,11 @@ ng-ribbon .ribbon ng-ribbon-menu .ribbon-menu-content ng-ribbon-menu-separator {
 
 /* Tab Content */
 
-ng-ribbon .ribbon .tab-content > [ng-transclude] {
+ng-ribbon .ribbon .tab-content > .dynamic-tabs {
+    height: 100%;
+}
+
+ng-ribbon .ribbon .tab-content .tab {
     display: flex;
     height: 100%;
     margin-right: 30px;
@@ -351,12 +355,14 @@ ng-ribbon .ribbon .tab-content ng-ribbon-group {
     flex-direction: column;
     margin: 3px 0;
     border-right: solid 1px #E1E1E1;
+    min-width: 60px;
 }
 
 ng-ribbon .ribbon .tab-content ng-ribbon-group > [ng-transclude] {
     flex: 1;
     padding: 7px 7px 0 7px;
     display: flex;
+    justify-content: center;
 }
 
 ng-ribbon .ribbon .tab-content ng-ribbon-group > .group-label {
@@ -372,6 +378,7 @@ ng-ribbon .button {
     cursor: pointer;
     border: solid 1px transparent;
     box-sizing: border-box;
+    position: relative;
 }
 
 ng-ribbon .button.disabled {
@@ -379,14 +386,17 @@ ng-ribbon .button.disabled {
     pointer-events: none;
 }
 
+ng-ribbon .drop-button,
 ng-ribbon .large-button {
     padding: 2px;
 }
 
+ng-ribbon .drop-button:hover,
 ng-ribbon .large-button:hover {
     background-color: #D5E1F2;
 }
 
+ng-ribbon .drop-button:active,
 ng-ribbon .large-button:active {
     background-color: #C2D5F2;
 }
@@ -406,7 +416,8 @@ ng-ribbon .large-button > .title {
     max-width: 51px;
 }
 
-ng-ribbon .large-button > img {
+ng-ribbon .large-button > img,
+ng-ribbon .drop-button > img {
     margin-bottom: 5px;
 }
 
@@ -433,15 +444,19 @@ ng-ribbon .split-button img {
 
 ng-ribbon .split-button .title {
     flex: 1;
+    padding: 0 2px;
+}
+
+ng-ribbon .button .title {
     text-align: center;
 }
 
-ng-ribbon .split-button .title > svg {
+ng-ribbon .button .title > svg {
     display: block;
     margin: 6px auto 0;
 }
 
-ng-ribbon .split-button .title > .multiline + svg {
+ng-ribbon .button .title > .multiline + svg {
     display: inline;
     vertical-align: top;
 }
@@ -451,6 +466,7 @@ ng-ribbon .split-button .title:hover {
     background-color: #D5E1F2;
 }
 
+ng-ribbon .drop-button.open,
 ng-ribbon .split-button.open .image,
 ng-ribbon .split-button.open .title,
 ng-ribbon .split-button .image:active,
@@ -458,15 +474,32 @@ ng-ribbon .split-button .title:active {
     background-color: #C2D5F2;
 }
 
-ng-ribbon .button .ribbon-popup {
+ng-ribbon .ribbon-popup {
     display: none;
     position: absolute;
-    border: solid 1px black;
+    top: 100%;
+    border: solid 1px #C6C6C6;
+    -webkit-box-shadow: 1px 1px 5px #C6C6C6;
+    -moz-box-shadow: 1px 1px 5px #C6C6C6;
+    box-shadow: 1px 1px 5px #C6C6C6;
+    padding: 1px;
     background-color: white;
     min-width: 57px;
     max-width: 200px;
+    max-height: calc(100vh - 150px);
+    overflow: auto;
 }
 
 ng-ribbon .button.open .ribbon-popup {
     display: block;
+    animation: show-popup 50ms linear;
+}
+
+@keyframes show-popup {
+    from {
+        transform: translateY(-10px);
+    }
+    to {
+        transform: translateY(0);
+    }
 }

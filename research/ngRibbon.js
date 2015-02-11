@@ -1,5 +1,5 @@
 angular.module('ngRibbon', ['ngAnimate', 'ngRibbon.menu', 'ngRibbon.utils', 'ngRibbon.actions'])
-    .directive('ngRibbon', function (clickHandler) {
+    .directive('ngRibbon', function ($templateCache, clickHandler, dynamicRibbon) {
         function ContextualGroup(parent, title, color) {
             this.parent = parent;
             this.title = title;
@@ -53,6 +53,7 @@ angular.module('ngRibbon', ['ngAnimate', 'ngRibbon.menu', 'ngRibbon.utils', 'ngR
             this.document = document;
             this.contextualColors = contextualColors;
             this.tabs = [];
+            this.dynamicTabs = [];
             this.contextualGroups = [];
             this._collapsed = false;
         }
@@ -74,6 +75,8 @@ angular.module('ngRibbon', ['ngAnimate', 'ngRibbon.menu', 'ngRibbon.utils', 'ngR
 
             this.activeTab = tab;
             this.activeTab.active = true;
+
+            this.scope.$broadcast('tabActivated', { title: tab.title });
 
             if (this._collapsed) {
                 this.globalClearActiveTab();
@@ -141,12 +144,12 @@ angular.module('ngRibbon', ['ngAnimate', 'ngRibbon.menu', 'ngRibbon.utils', 'ngR
             },
             addTab: {
                 value: function (title, contextualTitle) {
-                    var active = this.tabs.length === 0;
                     var tab = {
                         title: title,
-                        active: active
+                        active: this.tabs.length === 0 && !contextualTitle
                     };
-                    if (active) {
+
+                    if (tab.active) {
                         this.activeTab = tab;
                     }
 
@@ -156,6 +159,23 @@ angular.module('ngRibbon', ['ngAnimate', 'ngRibbon.menu', 'ngRibbon.utils', 'ngR
                         this.addContextualTab(tab, contextualTitle);
                     }
                     return tab;
+                }
+            },
+            addDynamicTab: {
+                value: function (title, contextualTitle, addedCallback) {
+
+                    this.dynamicTabs.push({
+                        title: title,
+                        contextualTitle: contextualTitle,
+                        addedCallback: addedCallback
+                    });
+                }
+            },
+            addDynamicTabs: {
+                value: function () {
+                    this.dynamicTabs.forEach(function (tab) {
+                        tab.addedCallback(this.addTab(tab.title, tab.contextualTitle));
+                    }, this);
                 }
             },
             addContextualTab: {
@@ -193,11 +213,21 @@ angular.module('ngRibbon', ['ngAnimate', 'ngRibbon.menu', 'ngRibbon.utils', 'ngR
             controller: ['$scope', '$element', '$document', 'contextualColors', RibbonController],
             controllerAs: 'ribbon',
             bindToController: true,
-            link: function (scope, element, attrs, ctrl, transclude) {
-                transclude(function (clone) {
-                    var tabContents = element[0].querySelector('.tab-content');
-                    angular.element(tabContents).prepend(clone);
+            compile: function (element) {
+                var tabContents = angular.element(element[0].querySelector('.tab-content'));
+
+                dynamicRibbon.tabs.forEach(function (tab) {
+                    var template = angular.element($templateCache.get(tab));
+                    template.attr('data-dynamic', true);
+                    tabContents.prepend(template);
                 });
+
+                return function link(scope, element, attrs, ctrl, transclude) {
+                    transclude(function (clone) {
+                        tabContents.prepend(clone);
+                    });
+                    ctrl.addDynamicTabs();
+                };
             }
         };
     })
@@ -276,22 +306,57 @@ angular.module('ngRibbon', ['ngAnimate', 'ngRibbon.menu', 'ngRibbon.utils', 'ngR
                 title: '=',
                 contextual: '@?'
             },
-            template: '<div ng-transclude ng-show="tab.active"></div>',
+            template: '<div class="tab" ng-transclude ng-show="tab.active"></div>',
             transclude: true,
             replace: true,
-            require: '^ngRibbon',
-            link: function (scope, element, attrs, ribbonController) {
-                scope.tab = ribbonController.addTab(scope.title, scope.contextual);
+            require: ['^ngRibbon', 'ngRibbonTab'],
+            controller: function () {},
+            link: {
+                pre: function (scope, element, attrs, ctrls) {
+                    var tabController = ctrls[1];
+                    tabController.title = scope.title;
+                },
+                post: function (scope, element, attrs, ctrls) {
+                    var ribbonController = ctrls[0];
+
+                    if (attrs.dynamic === 'true') {
+                        ribbonController.addDynamicTab(scope.title, scope.contextual, function (tab) {
+                            scope.tab = tab;
+                        })
+                    } else {
+                        scope.tab = ribbonController.addTab(scope.title, scope.contextual);
+                    }
+                }
             }
         };
     })
-    .directive('ngRibbonGroup', function () {
+    .directive('ngRibbonGroup', function ($compile, dynamicRibbon) {
+        function getDynamicTemplate(command) {
+            var template = ['<ng-', command.type, ' command="', command.command, '"'];
+            if (command.popup) {
+                template = template.concat([' popup="', command.popup, '"']);
+            }
+            template = template.concat(['></ng-', command.type, '>']);
+            return template.join('');
+        }
+
         return {
             scope: {
                 title: '='
             },
             templateUrl: 'ribbon-group.html',
-            transclude: true
+            transclude: true,
+            require: '^ngRibbonTab',
+            link: function (scope, element, attrs, tabController) {
+                var transclude = angular.element(element[0].firstElementChild);
+                var commands = dynamicRibbon.commands(tabController.title, scope.title);
+                commands.forEach(function (command) {
+                    var template = getDynamicTemplate(command);
+                    var templateElement = angular.element(template);
+                    $compile(templateElement)(scope);
+                    transclude.append(templateElement);
+                });
+            }
         };
     })
     .factory('contextualColors', function () {
@@ -307,6 +372,51 @@ angular.module('ngRibbon', ['ngAnimate', 'ngRibbon.menu', 'ngRibbon.utils', 'ngR
                 return color;
             }
         }
+    })
+    .provider('dynamicRibbon', function () {
+        function DynamicRibbonProvider() {
+            this._tabs = [];
+            this._groupCommands = {};
+        }
+
+        Object.defineProperties(DynamicRibbonProvider.prototype, {
+            registerTab: {
+                value: function (templateUrl) {
+                    this._tabs.push(templateUrl);
+                }
+            },
+            registerCommand: {
+                value: function (command) {
+                    var key = command.tab + '$' + command.group;
+                    var commands = this._groupCommands[key];
+                    if (!commands) {
+                        commands = this._groupCommands[key] = [];
+                    }
+                    commands.push(command);
+                }
+            },
+            $get: {
+                value: function () {
+                    return new DynamicRibbonService(this);
+                }
+            }
+        });
+
+        function DynamicRibbonService(provider) {
+            this.tabs = provider._tabs;
+            this._commands = provider._groupCommands;
+        }
+
+        Object.defineProperties(DynamicRibbonService.prototype, {
+            commands: {
+                value: function (tabName, groupName) {
+                    var key = tabName + '$' + groupName;
+                    return this._commands[key] || [];
+                }
+            }
+        });
+
+        return new DynamicRibbonProvider();
     });
 
 angular.module('ngRibbon.menu', [])
@@ -396,149 +506,194 @@ angular.module('ngRibbon.menu', [])
         };
     });
 
-(function (ng) {
-
-function LargeButtonController() {
-}
-
-Object.defineProperties(LargeButtonController.prototype, {
-    setCommand: {
-        value: function (command) {
-            this.command = command;
-        }
-    },
-    visible: {
-        get: function () {
-            return !!this.command && (!this.command.hasOwnProperty('visible') || this.command.visible);
-        }
-    },
-    disabled: {
-        get: function () {
-            return !!this.command && this.command.disabled;
-        }
-    },
-    title: {
-        get: function () {
-            return !!this.command ? this.command.title : '';
-        }
-    },
-    image: {
-        get: function () {
-            return !!this.command ? this.command.image : '';
-        }
-    },
-    execute: {
-        value: function () {
-            if (this.command.action) {
-                this.command.action(this.command.title);
-            }
-        }
+(function () {
+    function LargeButtonController() {
     }
-});
-    
-function SplitButtonController(scope, document) {
-    this.scope = scope;
-    this.document = document;
-}
-SplitButtonController.prototype = Object.create(LargeButtonController.prototype);
 
-SplitButtonController.EmptyCommands = [];
-Object.defineProperties(SplitButtonController.prototype, {
-    opened: {
-        get: function () {
-            return this.visible && !this.disabled && this._opened;
-        }
-    },
-    open: {
-        value: function (e) {
-            e.stopPropagation();
-
-            if (this._opened) {
-                this._opened = false;
-                return;
+    Object.defineProperties(LargeButtonController.prototype, {
+        setCommand: {
+            value: function (command) {
+                this.command = command;
             }
-
-            this._opened = true;
-            
-            if (this.command.autoClose === false) {
-                return;
+        },
+        visible: {
+            get: function () {
+                return !!this.command && (!this.command.hasOwnProperty('visible') || this.command.visible);
             }
-
-            this.document.one('click', function () {
-                this._opened = false;
-                this.scope.$digest();
-            }.bind(this));
-        }
-    }
-});
-
-var DropButtonController = SplitButtonController;
-    
-angular.module('ngRibbon.actions', [])
-    .directive('ngLargeButton', function () {
-        return {
-            scope: {
-                command: '@'
-            },
-            controller: LargeButtonController,
-            controllerAs: 'button',
-            require: ['^ngRibbon', 'ngLargeButton'],
-            templateUrl: 'ribbon-large-button.html',
-            replace: true,
-            link: function (scope, element, attrs, ctrls) {
-                var ribbonController = ctrls[0];
-                var command = ribbonController.getCommand(scope.command);
-                if (command) {
-                    var largeRibbonController = ctrls[1];
-                    largeRibbonController.setCommand(command);
-                }
+        },
+        disabled: {
+            get: function () {
+                return !!this.command && this.command.disabled;
             }
-        };
-    })
-    .directive('ngSplitButton', function () {
-        return {
-            scope: {
-                command: '@'
-            },
-            controller: ['$scope', '$document', SplitButtonController],
-            controllerAs: 'button',
-            require: ['^ngRibbon', 'ngSplitButton'],
-            templateUrl: 'ribbon-split-button.html',
-            transclude: true,
-            replace: true,
-            link: function (scope, element, attrs, ctrls) {
-                var ribbonController = ctrls[0];
-                var command = ribbonController.getCommand(scope.command);
-                if(command) {
-                    var splitButtonController = ctrls[1];
-                    splitButtonController.setCommand(command);
-                }
+        },
+        title: {
+            get: function () {
+                return !!this.command ? this.command.title : '';
             }
-        }
-    })
-    .directive('ngDropButton', function () {
-        return {
-            scope: {
-                command: '@'
-            },
-            require: ['^ngRibbon', 'ngDropButton'],
-            templateUrl: 'ribbon-drop-button.html',
-            transclude: true,
-            replace: true,
-            controller: ['$scope', '$document', DropButtonController],
-            controllerAs: 'button',
-            link: function (scope, element, attrs, ctrls) {
-                var ribbonController = ctrls[0];
-                var command = ribbonController.getCommand(scope.command);
-                if (command) {
-                    var dropButtonController = ctrls[1];
-                    dropButtonController.setCommand(command);
+        },
+        image: {
+            get: function () {
+                return !!this.command ? this.command.image : '';
+            }
+        },
+        execute: {
+            value: function () {
+                if (this.command.action) {
+                    this.command.action(this.command.title);
                 }
             }
         }
     });
 
-}(angular));
+    function PopupButtonController(scope, actions) {
+        this.scope = scope;
+        this.actions = actions;
+
+        this.actions.register(this.scope);
+    }
+
+    PopupButtonController.prototype = Object.create(LargeButtonController.prototype);
+
+    PopupButtonController.EmptyCommands = [];
+    Object.defineProperties(PopupButtonController.prototype, {
+        setCommand: {
+            value: function (command, popupUrl) {
+                LargeButtonController.prototype.setCommand.call(this, command);
+                this.popupUrl = popupUrl;
+            }
+        },
+        opened: {
+            get: function () {
+                return this.visible && !this.disabled && this._opened;
+            }
+        },
+        open: {
+            value: function (e) {
+                e.stopPropagation();
+
+                if (!this.popupUrl) {
+                    return;
+                }
+
+                if (this._opened) {
+                    this._opened = false;
+                    return;
+                }
+
+                this.actions.open(this, this.command.autoClose !== false);
+            }
+        },
+        close: {
+            value: function (digest) {
+                this._opened = false;
+                if (digest) {
+                    this.scope.$digest();
+                }
+            }
+        }
+    });
+
+    angular.module('ngRibbon.actions', [])
+        .directive('ngLargeButton', function () {
+            return {
+                scope: {
+                    command: '@'
+                },
+                controller: LargeButtonController,
+                controllerAs: 'button',
+                require: ['^ngRibbon', 'ngLargeButton'],
+                templateUrl: 'ribbon-large-button.html',
+                replace: true,
+                link: function (scope, element, attrs, ctrls) {
+                    var ribbonController = ctrls[0];
+                    var command = ribbonController.getCommand(scope.command);
+                    if (command) {
+                        var largeRibbonController = ctrls[1];
+                        largeRibbonController.setCommand(command);
+                    }
+                }
+            };
+        })
+        .directive('ngSplitButton', function () {
+            return {
+                scope: {
+                    command: '@',
+                    popup: '@'
+                },
+                controller: ['$scope', 'actions', PopupButtonController],
+                controllerAs: 'button',
+                require: ['^ngRibbon', 'ngSplitButton'],
+                templateUrl: 'ribbon-split-button.html',
+                transclude: true,
+                replace: true,
+                link: function (scope, element, attrs, ctrls) {
+                    var ribbonController = ctrls[0];
+                    var command = ribbonController.getCommand(scope.command);
+                    if (command) {
+                        var splitButtonController = ctrls[1];
+                        splitButtonController.setCommand(command, scope.popup);
+                    }
+                }
+            }
+        })
+        .directive('ngDropButton', function () {
+            return {
+                scope: {
+                    command: '@',
+                    popup: '@'
+                },
+                require: ['^ngRibbon', 'ngDropButton'],
+                templateUrl: 'ribbon-drop-button.html',
+                transclude: true,
+                replace: true,
+                controller: ['$scope', 'actions', PopupButtonController],
+                controllerAs: 'button',
+                link: function (scope, element, attrs, ctrls) {
+                    var ribbonController = ctrls[0];
+                    var command = ribbonController.getCommand(scope.command);
+                    if (command) {
+                        var dropButtonController = ctrls[1];
+                        dropButtonController.setCommand(command, scope.popup);
+                    }
+                }
+            }
+        })
+        .factory('actions', function ($document) {
+            var controller = null;
+            var globalRegistered = false;
+
+            function close(digest) {
+                if (controller === null) {
+                    return;
+                }
+
+                controller.close(digest);
+                controller = null;
+            }
+
+            return {
+                register: function (scope) {
+                    scope.$on('tabActivated', function () {
+                        close(false);
+                    });
+                },
+                open: function (ctrl, autoClose) {
+                    close(false);
+
+                    controller = ctrl;
+                    controller._opened = true;
+
+                    if (autoClose && !globalRegistered) {
+                        globalRegistered = true;
+                        $document.one('click', function () {
+                            close(true);
+                            globalRegistered = false;
+                        });
+                    }
+                }
+            }
+        });
+}());
 
 angular.module('ngRibbon.utils', [])
     .factory('optimizedResize', function ($window) {
@@ -580,33 +735,33 @@ angular.module('ngRibbon.utils', [])
     .factory('clickHandler', function ($timeout) {
         return function (onClick, onDoubleClick) {
             /*
-            //var action = firstClick;
-            //var timerPromise;
-            //var ignoreSecondClick = false;
-            //
-            //function firstClick() {
-            //    ignoreSecondClick = onClick && onClick.apply(this, arguments);
-            //
-            //    action = secondClick;
-            //
-            //    timerPromise = $timeout(function () {
-            //        action = firstClick;
-            //    }, 200);
-            //}
-            //
-            //function secondClick() {
-            //    if (!ignoreSecondClick) {
-            //        onDoubleClick && onDoubleClick.apply(this, arguments);
-            //    }
-            //
-            //    action = firstClick;
-            //    timerPromise && $timeout.cancel(timerPromise);
-            //}
-            //
-            //return function () {
-            //    action.apply(this, arguments);
-            //}
-            */
+             //var action = firstClick;
+             //var timerPromise;
+             //var ignoreSecondClick = false;
+             //
+             //function firstClick() {
+             //    ignoreSecondClick = onClick && onClick.apply(this, arguments);
+             //
+             //    action = secondClick;
+             //
+             //    timerPromise = $timeout(function () {
+             //        action = firstClick;
+             //    }, 200);
+             //}
+             //
+             //function secondClick() {
+             //    if (!ignoreSecondClick) {
+             //        onDoubleClick && onDoubleClick.apply(this, arguments);
+             //    }
+             //
+             //    action = firstClick;
+             //    timerPromise && $timeout.cancel(timerPromise);
+             //}
+             //
+             //return function () {
+             //    action.apply(this, arguments);
+             //}
+             */
             var index = 0;
             var clicks = 0;
             return function () {
@@ -628,11 +783,38 @@ angular.module('ngRibbon.utils', [])
         }
     })
     .directive('ngIsMultiline', function () {
-        return function link(scope, element) {
+        function checkMultiline(el) {
+            if (el.getClientRects().length > 1) {
+                el.classList.add('multiline');
+            }
+        }
+
+        function setupCheck(params) {
             setTimeout(function () {
-                if (element[0].getClientRects().length > 1) {
-                    element.addClass('multiline');
+                if (params.el.offsetParent === null) {
+                    wait(params);
+                } else {
+                    if (params.off) {
+                        params.off();
+                    }
+                    checkMultiline(params.el);
                 }
+            }, 0);
+        }
+
+        function wait(params) {
+            if (!params.off) {
+                params.off = params.scope.$on('tabActivated', function () {
+                    setupCheck(params);
+                });
+            }
+        }
+
+        return function link(scope, element) {
+            setupCheck({
+                el: element[0],
+                off: null,
+                scope: scope
             });
         };
     });
