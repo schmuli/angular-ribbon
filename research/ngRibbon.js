@@ -227,6 +227,12 @@ angular.module('ngRibbon', ['ngAnimate', 'ngRibbon.menu', 'ngRibbon.utils', 'ngR
                     transclude(function (clone) {
                         tabContents.prepend(clone);
                     });
+                    
+                    var backstageEl = tabContents[0].querySelector('ng-ribbon-backstage');
+                    if (backstageEl) {
+                        backstageEl.remove();
+                        element[0].firstElementChild.insertBefore(backstageEl, tabContents[0]);
+                    }
                     ctrl.addDynamicTabs();
                 };
             }
