@@ -76,7 +76,7 @@ angular.module('ngRibbon', ['ngAnimate', 'ngRibbon.menu', 'ngRibbon.utils', 'ngR
             this.activeTab = tab;
             this.activeTab.active = true;
 
-            this.scope.$broadcast('tabActivated', { title: tab.title });
+            this.scope.$broadcast('tabActivated', { title: tab.title, contextual: tab.contextual });
 
             if (this._collapsed) {
                 this.globalClearActiveTab();
@@ -146,7 +146,8 @@ angular.module('ngRibbon', ['ngAnimate', 'ngRibbon.menu', 'ngRibbon.utils', 'ngR
                 value: function (title, contextualTitle) {
                     var tab = {
                         title: title,
-                        active: this.tabs.length === 0 && !contextualTitle
+                        active: this.tabs.length === 0 && !contextualTitle,
+                        contextual: !!contextualTitle
                     };
 
                     if (tab.active) {
@@ -231,7 +232,7 @@ angular.module('ngRibbon', ['ngAnimate', 'ngRibbon.menu', 'ngRibbon.utils', 'ngR
             }
         };
     })
-    .directive('ngRibbonTitle', function (optimizedResize) {
+    .directive('ngRibbonTitle', function ($document, optimizedResize) {
         return {
             scope: {
                 title: '='
@@ -239,32 +240,34 @@ angular.module('ngRibbon', ['ngAnimate', 'ngRibbon.menu', 'ngRibbon.utils', 'ngR
             require: '^ngRibbon',
             templateUrl: 'ribbon-title.html',
             link: function (scope, element) {
-                var titleElement = element.find('div');
+                var titleElement = element[0].querySelector('.title');
 
-                var originalPosition;
-                optimizedResize.add(function () {
-                    originalPosition = undefined;
-                    scope.$digest();
-                });
-
-                scope.position = function () {
-                    var position = calculatePosition(titleElement[0], originalPosition);
-                    if (position && !originalPosition) {
-                        originalPosition = position;
-                    }
-                    return position ? {marginLeft: position + 'px'} : undefined;
+                function calculateLocation() {
+                    setTimeout(function () {
+                        var left = calculatePosition(titleElement);
+                        if (titleElement.style.left !== left) {
+                            titleElement.style.left = left;
+                        }
+                    }, 0);
                 }
+
+                calculateLocation();
+                optimizedResize.add(calculateLocation);
+                scope.$on('tabActivated', calculateLocation);
             }
         };
 
-        function calculatePosition(titleElement, originalPosition) {
+        function calculatePosition(titleElement) {
             var currentPosition = titleElement.getBoundingClientRect();
-            var overlap = document.elementFromPoint(currentPosition.left, currentPosition.top);
+            var left = $document[0].body.clientWidth / 2 - currentPosition.width / 2;
+            titleElement.style.display = 'none';
+            var overlap = document.elementFromPoint(left, currentPosition.top);
+            titleElement.style.display = '';
             if (overlap && overlap.parentElement.classList.contains('contextual-group')) {
                 var overlapPosition = overlap.getBoundingClientRect();
-                return overlapPosition.left + overlapPosition.width + 1;
+                return (overlapPosition.left + overlapPosition.width + 1) + 'px';
             } else {
-                return originalPosition;
+                return 'calc(50% - ' + (currentPosition.width / 2) + 'px)';
             }
         }
     })
