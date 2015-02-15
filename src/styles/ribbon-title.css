@@ -1,0 +1,12 @@
+ng-ribbon > .ribbon-title {
+    position: relative;
+    background-color: white;
+    display: flex;
+    border-bottom: solid 1px #d4d4d4;
+}
+
+ng-ribbon > .ribbon-title > .document-title > div {
+    line-height: 30px;
+    position: relative;
+    z-index: 1010;
+}

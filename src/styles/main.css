@@ -1,0 +1,17 @@
+ng-ribbon,
+ng-ribbon *,
+ng-ribbon *:before,
+ng-ribbon *:after {
+    box-sizing: border-box;
+}
+
+ng-ribbon {
+    display: block;
+    font-family: 'Segoe UI', Arial, Verdana, sans-serif;
+    font-size: 12px;
+    margin-bottom: 5px;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}

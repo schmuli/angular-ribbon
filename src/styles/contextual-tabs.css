@@ -1,0 +1,15 @@
+ng-ribbon > .ribbon-title > .tabs > .contextual-group {
+    display: inline-block;
+    position: relative;
+    margin-right: 5px;
+}
+
+ng-ribbon > .ribbon-title > .tabs > .contextual-group > span {
+    display: block;
+    text-align: center;
+    line-height: 30px;
+}
+
+ng-ribbon > .ribbon-title > .tabs > .contextual-group .tab-name {
+    margin-top: 0;
+}

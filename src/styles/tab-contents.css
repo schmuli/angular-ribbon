@@ -1,0 +1,33 @@
+ng-ribbon > .tab-content {
+    position: absolute;
+    top: 56px;
+    height: 104px;
+    width: 100%;
+    background-color: #ffffff;
+    transform: translateY(-100%);
+    z-index: 990;
+    animation: hide-tab-content 100ms linear;
+}
+
+ng-ribbon.open > .tab-content {
+    transform: translateY(0);
+    animation: show-tab-content 300ms linear;
+}
+
+@keyframes show-tab-content {
+    from {
+        transform: translateY(-100%);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+@keyframes hide-tab-content {
+    from {
+        transform: translateY(0);
+    }
+    to {
+        transform: translateY(-100%);
+    }
+}

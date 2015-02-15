@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+
+    <style>
+        html, body {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .main-content {
+            background-color: tan;
+            flex: 1;
+        }
+    </style>
+    <style>
+        ng-ribbon,
+        ng-ribbon *,
+        ng-ribbon *:before,
+        ng-ribbon *:after {
+            box-sizing: border-box;
+        }
+
+        ng-ribbon {
+            display: block;
+            font-family: 'Segoe UI', Arial, Verdana, sans-serif;
+            font-size: 12px;
+            margin-bottom: 5px;
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        ng-ribbon > .ribbon-title {
+            position: relative;
+            background-color: white;
+            display: flex;
+            border-bottom: solid 1px #d4d4d4;
+            z-index: 1000;
+        }
+
+        ng-ribbon > .ribbon-title > .quick-access {
+            position: absolute;
+        }
+        
+        ng-ribbon > .ribbon-title > .tabs {
+            height: 55px;
+        }
+
+        ng-ribbon > .ribbon-title > .tabs .tab-name {
+            display: inline-block;
+            cursor: pointer;
+            margin-top: 30px;
+            padding: 4px 10px;
+            text-transform: uppercase;
+            border-top: solid 1px;
+            border-left: solid 1px;
+            border-right: solid 1px;
+            border-color: transparent;
+        }
+
+        ng-ribbon > .ribbon-title > .tabs .tab-name.backstage-tab {
+            color: white;
+            background-color: #2b579a;
+            padding-left: 20px;
+            padding-right: 20px;
+            border-bottom: solid 1px;
+            border-color: #2b579a;
+        }
+
+        ng-ribbon > .ribbon-title > .tabs .tab-name.active {
+            border-color: #d4d4d4;
+            border-bottom: solid 1px white;
+            color: #2b579a;
+        }
+
+        ng-ribbon > .ribbon-title > .tabs .tab-name.backstage-tab:hover {
+            background-color: #3e6db5;
+            border-color: #3e6db5;
+        }
+
+        ng-ribbon > .ribbon-title > .tabs > .contextual-group {
+            display: inline-block;
+            position: relative;
+            margin-right: 5px;
+        }
+
+        ng-ribbon > .ribbon-title > .tabs > .contextual-group > span {
+            display: block;
+            text-align: center;
+            line-height: 30px;
+        }
+
+        ng-ribbon > .ribbon-title > .tabs > .contextual-group .tab-name {
+            margin-top: 0;
+        }
+
+        ng-ribbon > .ribbon-title > .document-title > div {
+            line-height: 30px;
+            position: relative;
+            z-index: 1010;
+        }
+
+
+        ng-ribbon .backstage {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: white;
+            z-index: 1000;
+            transform: translateX(-100%);
+            transition: transform 0s linear 100ms;
+        }
+
+        ng-ribbon .backstage > .document-title {
+            position: absolute;
+            text-align: center;
+            width: 100%;
+            line-height: 30px;
+        }
+
+        ng-ribbon .backstage > .backstage-panel {
+            height: 100%;
+            animation: hide-backstage 100ms linear;
+        }
+
+        ng-ribbon.backstage-open .backstage {
+            transform: translateX(0);
+            transition: transform 0s linear 0ms;
+        }
+
+        ng-ribbon.backstage-open .backstage > .backstage-panel {
+            transform: translateX(0);
+            animation: show-backstage 100ms linear;
+        }
+
+        ng-ribbon .backstage .backstage-panel > .backstage-close {
+            position: absolute;
+            width: 34px;
+            height: 34px;
+            border: solid 2px white;
+            border-radius: 50%;
+            cursor: pointer;
+            line-height: 20px;
+            margin: 20px 0 15px 20px;
+        }
+
+        ng-ribbon .backstage .backstage-panel > .backstage-close:hover {
+            border-color: #97B1D8;
+        }
+
+        ng-ribbon .backstage .backstage-panel > .backstage-close:hover path {
+            fill: #97B1D8;
+        }
+
+        ng-ribbon .backstage .backstage-panel > .backstage-content {
+            height: 100%;
+        }
+
+        @keyframes show-backstage {
+            from {
+                transform: translateX(-75px);
+            }
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes hide-backstage {
+            from {
+                transform: translateX(0);
+            }
+            to {
+                transform: translateX(-75px);
+            }
+        }
+
+
+        ng-ribbon > .tab-content {
+            position: absolute;
+            top: 56px;
+            height: 104px;
+            width: 100%;
+            background-color: #ffffff;
+            transform: translateY(-100%);
+            z-index: 990;
+            animation: hide-tab-content 100ms linear;
+        }
+
+        ng-ribbon.open > .tab-content {
+            transform: translateY(0);
+            animation: show-tab-content 300ms linear;
+        }
+
+        @keyframes show-tab-content {
+            from {
+                transform: translateY(-100%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes hide-tab-content {
+            from {
+                transform: translateY(0);
+            }
+            to {
+                transform: translateY(-100%);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <ng-ribbon>
+        <div class="ribbon-title">
+            <div class="quick-access">QAT</div>
+            <div class="tabs">
+                <div class="tab-name backstage-tab">File</div>
+                <div class="tab-name active" id="home">Home</div>
+                <div class="tab-name">Insert</div>
+                <div class="contextual-group">
+                    <span>Group Title</span>
+                    <div class="tab-name">Context 1</div>
+                </div>
+                <div class="contextual-group">
+                    <span>Group Title 1</span>
+                    <div class="tab-name">Context 2</div>
+                    <div class="tab-name">Context 3</div>
+                </div>
+            </div>
+            <div class="document-title">
+                <div>Document 1</div>
+            </div>
+        </div>
+        <div class="backstage">
+            <div class="document-title">Document 1</div>
+            <div class="backstage-panel">
+                <div class="backstage-close">
+                    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="30px" height="30px" viewBox="0 0 512 512">
+                        <path fill="#fff"
+                              d="M377.916,243.5H164.262l58.659-58.661c4.882-4.882,4.882-12.796,0-17.678c-4.883-4.881-12.797-4.881-17.678,0l-79.998,80c-4.882,4.882-4.882,12.796,0,17.678l80,80c2.44,2.44,5.64,3.661,8.839,3.661s6.398-1.221,8.839-3.661 c4.882-4.882,4.882-12.796,0-17.678L164.262,268.5h213.654c6.903,0,12.5-5.597,12.5-12.5S384.819,243.5,377.916,243.5z"></path>
+                    </svg>
+                </div>
+                <div class="backstage-content">
+                    <div style="display: flex; height: 100%;">
+                        <div style="width: 250px; background-color: #19469D">Menu</div>
+                        <div style="flex: 1">Content</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-content">
+            <div class="tab">
+                <ng-ribbon-group>
+                    <div></div>
+                    <div class="group-label">Tabs</div>
+                </ng-ribbon-group>
+                <ng-ribbon-group>
+                    <div></div>
+                    <div class="group-label">Report</div>
+                </ng-ribbon-group>
+            </div>
+            <div class="tab">
+                <ng-ribbon-group>
+                    <div></div>
+                    <div class="group-label">Pages</div>
+                </ng-ribbon-group>
+            </div>
+        </div>
+    </ng-ribbon>
+
+    <div class="main-content"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+//            var tabs = document.querySelector('.tabs');
+//            var title = document.querySelector('.document-title > div');
+//
+//            tabs.style.minWidth = 'calc(50% - ' + (title.getBoundingClientRect().width / 2) + 'px)';
+
+            var backstageOpen = document.querySelector('.backstage-tab');
+            var backstageClose = document.querySelector('.backstage-close');
+            var ribbon = document.querySelector('ng-ribbon');
+            backstageOpen.addEventListener('click', function () {
+                ribbon.classList.add('backstage-open');
+            });
+            backstageClose.addEventListener('click', function () {
+                ribbon.classList.remove('backstage-open');
+            });
+            document.getElementById('home').addEventListener('click', toggle);
+        });
+
+        var ribbon = document.querySelector('ng-ribbon');
+        function toggle(e) {
+            e.stopImmediatePropagation();
+            if (ribbon.classList.contains('open')) {
+                ribbon.classList.remove('open')
+                document.removeEventListener('click', toggle);
+            } else {
+                ribbon.classList.add('open');
+                document.addEventListener('click', toggle);
+            }
+        }
+    </script>
+
+</body>
+</html>
