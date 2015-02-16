@@ -4,7 +4,7 @@ var ngRibbonTitleDirective = function ($document, ribbonEvents, optimizedResize)
             title: '='
         },
         require: '^ngRibbon',
-        templateUrl: 'ribbon-title.html',
+        templateUrl: 'ngRibbon/templates/ribbon-title-template.html',
         link: function (scope, element) {
             var titleElement = element[0].querySelector('.title');
 

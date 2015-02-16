@@ -5,7 +5,7 @@ var ngDropButtonDirective = function () {
             popup: '@'
         },
         require: ['^ngRibbon', 'ngDropButton'],
-        templateUrl: 'ribbon-drop-button.html',
+        templateUrl: 'ngRibbon/templates/ribbon-drop-button-template.html',
         transclude: true,
         replace: true,
         controller: 'PopupButtonController',

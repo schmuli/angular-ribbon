@@ -3,7 +3,7 @@ var ngRibbonGroupDirective = function ($compile, dynamicRibbon) {
         scope: {
             title: '='
         },
-        templateUrl: 'ribbon-group.html',
+        templateUrl: 'ngRibbon/templates/ribbon-group-template.html',
         transclude: true,
         require: '^ngRibbonTab',
         link: function (scope, element, attrs, tabController) {

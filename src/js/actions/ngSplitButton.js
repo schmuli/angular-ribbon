@@ -7,7 +7,7 @@ var ngSplitButtonDirective = function () {
         controller: 'PopupButtonController',
         controllerAs: 'button',
         require: ['^ngRibbon', 'ngSplitButton'],
-        templateUrl: 'ribbon-split-button.html',
+        templateUrl: 'ngRibbon/templates/ribbon-split-button-template.html',
         transclude: true,
         replace: true,
         link: function (scope, element, attrs, ctrls) {

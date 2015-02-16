@@ -1,6 +1,6 @@
 function DynamicRibbonProvider() {
-    this._tabs = [];
-    this._groupCommands = {};
+    this.tabs = [];
+    this._commands = {};
 }
 
 Object.defineProperties(DynamicRibbonProvider.prototype, {
@@ -11,15 +11,15 @@ Object.defineProperties(DynamicRibbonProvider.prototype, {
     },
     registerTab: {
         value: function (templateUrl) {
-            this._tabs.push(templateUrl);
+            this.tabs.push(templateUrl);
         }
     },
     registerCommand: {
         value: function (command) {
             var key = this.key(command.tab, command.group);
-            var commands = this._groupCommands[key];
+            var commands = this._commands[key];
             if (!commands) {
-                commands = this._groupCommands[key] = [];
+                commands = this._commands[key] = [];
             }
             commands.push(command);
         }

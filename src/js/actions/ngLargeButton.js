@@ -6,7 +6,7 @@ var ngLargeButtonDirective = function () {
         controller: 'LargeButtonController',
         controllerAs: 'button',
         require: ['^ngRibbon', 'ngLargeButton'],
-        templateUrl: 'ribbon-large-button.html',
+        templateUrl: 'ngRibbon/templates/ribbon-large-button-template.html',
         replace: true,
         link: function (scope, element, attrs, ctrls) {
             var ribbonController = ctrls[0];

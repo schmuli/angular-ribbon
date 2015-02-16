@@ -1,7 +1,7 @@
 var ngRibbonMenuDirective = function () {
     return {
         scope: true,
-        templateUrl: 'ribbon-menu.html',
+        templateUrl: 'ngRibbon/templates/ribbon-menu-template.html',
         transclude: true,
         controller: 'RibbonMenuController',
         controllerAs: 'menu',

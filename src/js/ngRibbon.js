@@ -5,7 +5,7 @@ var ngRibbonDirective = function ($templateCache, clickHandler, dynamicRibbon) {
             ribbonContext: '=context'
         },
         transclude: true,
-        templateUrl: 'ribbon.html',
+        templateUrl: 'ngRibbon/templates/ribbon-template.html',
         controller: ['$scope', '$element', '$document', 'ribbonEvents', 'contextualColors', 'clickHandler', RibbonController],
         controllerAs: 'ribbon',
         bindToController: true,
