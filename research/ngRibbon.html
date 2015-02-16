@@ -239,43 +239,52 @@
 
 <script id="ribbon.html" type="text/ng-template">
     <div class="ribbon"
-         ng-class="{ 'backstage-open': ribbon.backstage.isOpen, 'collapsed': ribbon.collapsed, 'open': ribbon.hasActiveTab }">
+         ng-class="{ 'backstage-open': ribbon.backstage.opened, 'collapsed': ribbon.collapsed, 'open': ribbon.hasActiveTab }">
         <div class="ribbon-title">
-        <ng-ribbon-title data-title="ribbon.title"></ng-ribbon-title>
-        <div class="tabs">
-            <div ng-if="ribbon.hasBackstage"
-                 class="tab-name backstage"
-                 ng-click="ribbon.backstage.open()">
-                {{ ribbon.backstage.title }}
-            </div>
-            <div class="tab-name"
-                 ng-repeat="tab in ribbon.tabs"
-                 ng-class="{ 'active': tab.active }"
-                 ng-click="ribbon.activate(tab, $event)">
-                {{ tab.title }}
-            </div>
-            <div class="contextual-group ng-class:group.color"
-                 ng-repeat="group in ribbon.contextualGroups"
-                 ng-class="{ 'active': group.active }"
-                 ng-show="group.visible">
-                <span>{{ group.title }}</span>
-
+            <ng-ribbon-title data-title="ribbon.title"></ng-ribbon-title>
+            <div class="tabs">
+                <div ng-if="ribbon.hasBackstage"
+                     class="tab-name backstage-tab"
+                     ng-click="ribbon.backstage.open()">
+                    {{ ribbon.backstage.title }}
+                </div>
                 <div class="tab-name"
-                     ng-repeat="tab in group.tabs"
+                     ng-repeat="tab in ribbon.tabs"
                      ng-class="{ 'active': tab.active }"
                      ng-click="ribbon.activate(tab, $event)">
                     {{ tab.title }}
                 </div>
+                <div class="contextual-group ng-class:group.color"
+                     ng-repeat="group in ribbon.contextualGroups"
+                     ng-class="{ 'active': group.active }"
+                     ng-show="group.visible">
+                    <span>{{ group.title }}</span>
+
+                    <div class="tab-name"
+                         ng-repeat="tab in group.tabs"
+                         ng-class="{ 'active': tab.active }"
+                         ng-click="ribbon.activate(tab, $event)">
+                        {{ tab.title }}
+                    </div>
+                </div>
             </div>
         </div>
+        <div class="backstage" ng-if="ribbon.hasBackstage">
+            <div class="backstage-close"
+                 ng-click="ribbon.backstage.close()">
+                <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="30px" height="30px" viewBox="0 0 512 512">
+                    <path fill="#fff"
+                          d="M377.916,243.5H164.262l58.659-58.661c4.882-4.882,4.882-12.796,0-17.678c-4.883-4.881-12.797-4.881-17.678,0l-79.998,80c-4.882,4.882-4.882,12.796,0,17.678l80,80c2.44,2.44,5.64,3.661,8.839,3.661s6.398-1.221,8.839-3.661 c4.882-4.882,4.882-12.796,0-17.678L164.262,268.5h213.654c6.903,0,12.5-5.597,12.5-12.5S384.819,243.5,377.916,243.5z"></path>
+                </svg>
+            </div>
+            <div class="backstage-content" ng-ribbon-backstage-content=""></div>
         </div>
         <div class="tab-content">
             <div class="ribbon-collapse" ng-click="ribbon.toggleCollapse()">
-                <svg id="angle-up" width="29" height="17" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
-                    <polyline points="15,30 25,20 35,30" stroke="#777777" fill="transparent" stroke-width="5"/>
-                </svg>
-                <svg id="thumbtack" width="29" height="17" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
-                    <path fill="#777777"
+                <svg width="29" height="17" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+                    <polyline id="angle-up" points="15,30 25,20 35,30" stroke="#777777" fill="transparent" stroke-width="5"/>
+                    <path id="thumbtack" fill="#777777"
+                          transform="rotate(90, 25, 25)"
                           d="M32.333,25.207h-5.115l-2.217,14.252l-2.22-14.252h-5.114c0.726-1.232,1.648-2.262,2.7-3.047v-8.244h-1.323v-3.375h1.323h9.267h1.322v3.375h-1.324v8.244C30.684,22.945,31.607,23.975,32.333,25.207z"/>
                 </svg>
             </div>
@@ -290,19 +299,8 @@
 
 <script id="ribbon-quick-access.html" type="text/ng-template">
     <div ng-repeat="command in ribbon.commands | filter:quickAccess">
-        <img ng-src="{{ command.image }}" />
+        <img ng-src="{{ command.image }}"/>
     </div>
-</script>
-
-<script id="ribbon-backstage.html" type="text/ng-template">
-    <div class="backstage-close"
-         ng-click="backstage.close()">
-        <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="30px" height="30px" viewBox="0 0 512 512">
-            <path fill="#fff"
-                  d="M377.916,243.5H164.262l58.659-58.661c4.882-4.882,4.882-12.796,0-17.678c-4.883-4.881-12.797-4.881-17.678,0l-79.998,80c-4.882,4.882-4.882,12.796,0,17.678l80,80c2.44,2.44,5.64,3.661,8.839,3.661s6.398-1.221,8.839-3.661 c4.882-4.882,4.882-12.796,0-17.678L164.262,268.5h213.654c6.903,0,12.5-5.597,12.5-12.5S384.819,243.5,377.916,243.5z"></path>
-        </svg>
-    </div>
-    <div class="backstage-content" ng-transclude=""></div>
 </script>
 
 <script id="ribbon-menu.html" type="text/ng-template">

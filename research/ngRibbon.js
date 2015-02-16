@@ -1,432 +1,460 @@
-angular.module('ngRibbon', ['ngAnimate', 'ngRibbon.menu', 'ngRibbon.utils', 'ngRibbon.actions'])
-    .directive('ngRibbon', function ($templateCache, clickHandler, dynamicRibbon) {
-        function ContextualGroup(parent, title, color) {
-            this.parent = parent;
-            this.title = title;
-            this.color = 'color-' + color;
-            this.tabs = [];
+(function () {
+    angular.module('ngRibbon', ['ngAnimate', 'ngRibbon.menu', 'ngRibbon.utils', 'ngRibbon.actions'])
+        .directive('ngRibbon', function ($templateCache, clickHandler, dynamicRibbon) {
+            function ContextualGroup(parent, title, color) {
+                this.parent = parent;
+                this.title = title;
+                this.color = 'color-' + color;
+                this.tabs = [];
 
-            this.initialize();
-        }
-
-        Object.defineProperties(ContextualGroup.prototype, {
-            initialize: {
-                value: function () {
-                    var context = this.parent.ribbonContext;
-                    if (context.hasOwnProperty(this.title)) {
-                        return;
-                    }
-
-                    var _this = this;
-                    Object.defineProperty(context, this.title, {
-                        get: function () {
-                            return _this.visible;
-                        },
-                        set: function (value) {
-                            _this.visible = value;
-                            _this.onVisibleChanged();
-                        }
-                    });
-                }
-            },
-            hasActive: {
-                get: function () {
-                    return this.tabs.filter(function (tab) {
-                            return tab.active;
-                        }).length > 0;
-                }
-            },
-            onVisibleChanged: {
-                value: function () {
-                    if (this.visible && !this.parent.collapsed) {
-                        this.parent.activate(this.tabs[0]);
-                    } else if (this.hasActive) {
-                        this.parent.activate();
-                    }
-                }
-            }
-        });
-
-        function RibbonController(scope, element, document, contextualColors) {
-            this.scope = scope;
-            this.element = element;
-            this.document = document;
-            this.contextualColors = contextualColors;
-            this.tabs = [];
-            this.dynamicTabs = [];
-            this.contextualGroups = [];
-            this._collapsed = false;
-        }
-
-        function activate(tab) {
-            if (this.activeTab) {
-                if (this.activeTab === tab) {
-                    if (this._collapsed) {
-                        this.clearActiveTab();
-                    }
-                    return;
-                }
-                this.clearActiveTab();
+                this.initialize();
             }
 
-            if (!tab) {
-                tab = this.tabs[0];
-            }
-
-            this.activeTab = tab;
-            this.activeTab.active = true;
-
-            this.scope.$broadcast('tabActivated', { title: tab.title, contextual: tab.contextual });
-
-            if (this._collapsed) {
-                this.globalClearActiveTab();
-            }
-        }
-
-        function toggleCollapse(tab) {
-            if (tab && !this._collapsed && !tab.active) {
-                activate.call(this, tab);
-                return;
-            }
-
-            this._collapsed = !this._collapsed;
-            if (this._collapsed) {
-                this.clearActiveTab();
-            } else if (tab && !tab.active) {
-                activate.call(this, tab);
-            }
-        }
-
-        Object.defineProperties(RibbonController.prototype, {
-            hasBackstage: {
-                get: function () {
-                    return !!this.backstage;
-                }
-            },
-            collapsed: {
-                get: function () {
-                    return this._collapsed;
-                }
-            },
-            hasActiveTab: {
-                get: function () {
-                    return !!this.activeTab;
-                }
-            },
-            activate: {
-                value: clickHandler(activate, toggleCollapse)
-            },
-            toggleCollapse: {
-                value: toggleCollapse
-            },
-            globalClearActiveTab: {
-                value: function () {
-                    if (this.globalRegistered) {
-                        return;
-                    }
-                    this.globalRegistered = true;
-                    var _this = this;
-                    this.document.one('click', function (e) {
-                        _this.globalRegistered = false;
-                        if (_this.element[0].contains(e.target)) {
+            Object.defineProperties(ContextualGroup.prototype, {
+                initialize: {
+                    value: function () {
+                        var context = this.parent.ribbonContext;
+                        if (context.hasOwnProperty(this.title)) {
                             return;
                         }
-                        _this.clearActiveTab();
-                        _this.scope.$digest();
-                    });
-                }
-            },
-            clearActiveTab: {
-                value: function () {
-                    this.activeTab.active = false;
-                    this.activeTab = null;
-                }
-            },
-            addTab: {
-                value: function (title, contextualTitle) {
-                    var tab = {
-                        title: title,
-                        active: this.tabs.length === 0 && !contextualTitle,
-                        contextual: !!contextualTitle
-                    };
 
-                    if (tab.active) {
-                        this.activeTab = tab;
+                        var _this = this;
+                        Object.defineProperty(context, this.title, {
+                            get: function () {
+                                return _this.visible;
+                            },
+                            set: function (value) {
+                                _this.visible = value;
+                                _this.onVisibleChanged();
+                            }
+                        });
                     }
-
-                    if (!contextualTitle) {
-                        this.tabs.push(tab);
-                    } else {
-                        this.addContextualTab(tab, contextualTitle);
-                    }
-                    return tab;
-                }
-            },
-            addDynamicTab: {
-                value: function (title, contextualTitle, addedCallback) {
-
-                    this.dynamicTabs.push({
-                        title: title,
-                        contextualTitle: contextualTitle,
-                        addedCallback: addedCallback
-                    });
-                }
-            },
-            addDynamicTabs: {
-                value: function () {
-                    this.dynamicTabs.forEach(function (tab) {
-                        tab.addedCallback(this.addTab(tab.title, tab.contextualTitle));
-                    }, this);
-                }
-            },
-            addContextualTab: {
-                value: function (tab, contextualTitle) {
-                    var contextual = this.findContextual(contextualTitle);
-                    if (!contextual) {
-                        contextual = new ContextualGroup(this, contextualTitle, this.contextualColors.next());
-                        this.contextualGroups.push(contextual);
-                    }
-                    contextual.tabs.push(tab);
-                }
-            },
-            getCommand: {
-                value: function (commandName) {
-                    return this.ribbonContext.commands[commandName];
-                }
-            },
-            findContextual: {
-                value: function (title) {
-                    var contextual = this.contextualGroups.filter(function (group) {
-                        return group.title === title;
-                    });
-                    return contextual.length > 0 ? contextual[0] : null;
-                }
-            }
-        });
-
-        return {
-            scope: {
-                title: '=',
-                ribbonContext: '=context'
-            },
-            transclude: true,
-            templateUrl: 'ribbon.html',
-            controller: ['$scope', '$element', '$document', 'contextualColors', RibbonController],
-            controllerAs: 'ribbon',
-            bindToController: true,
-            compile: function (element) {
-                var tabContents = angular.element(element[0].querySelector('.tab-content'));
-
-                dynamicRibbon.tabs.forEach(function (tab) {
-                    var template = angular.element($templateCache.get(tab));
-                    template.attr('data-dynamic', true);
-                    tabContents.prepend(template);
-                });
-
-                return function link(scope, element, attrs, ctrl, transclude) {
-                    transclude(function (clone) {
-                        tabContents.prepend(clone);
-                    });
-                    
-                    var backstageEl = tabContents[0].querySelector('ng-ribbon-backstage');
-                    if (backstageEl) {
-                        backstageEl.remove();
-                        element[0].firstElementChild.insertBefore(backstageEl, tabContents[0]);
-                    }
-                    ctrl.addDynamicTabs();
-                };
-            }
-        };
-    })
-    .directive('ngRibbonTitle', function ($document, optimizedResize) {
-        return {
-            scope: {
-                title: '='
-            },
-            require: '^ngRibbon',
-            templateUrl: 'ribbon-title.html',
-            link: function (scope, element) {
-                var titleElement = element[0].querySelector('.title');
-
-                function calculateLocation() {
-                    setTimeout(function () {
-                        var left = calculatePosition(titleElement);
-                        if (titleElement.style.left !== left) {
-                            titleElement.style.left = left;
-                        }
-                    }, 0);
-                }
-
-                calculateLocation();
-                optimizedResize.add(calculateLocation);
-                scope.$on('tabActivated', calculateLocation);
-            }
-        };
-
-        function calculatePosition(titleElement) {
-            var currentPosition = titleElement.getBoundingClientRect();
-            var left = $document[0].body.clientWidth / 2 - currentPosition.width / 2;
-            titleElement.style.display = 'none';
-            var overlap = document.elementFromPoint(left, currentPosition.top);
-            titleElement.style.display = '';
-            if (overlap && overlap.parentElement.classList.contains('contextual-group')) {
-                var overlapPosition = overlap.getBoundingClientRect();
-                return (overlapPosition.left + overlapPosition.width + 1) + 'px';
-            } else {
-                return 'calc(50% - ' + (currentPosition.width / 2) + 'px)';
-            }
-        }
-    })
-    .directive('ngRibbonBackstage', function () {
-        function BackstageController() {
-        }
-
-        Object.defineProperties(BackstageController.prototype, {
-            open: {
-                value: function () {
-                    this.isOpen = true;
-                }
-            },
-            close: {
-                value: function () {
-                    this.isOpen = false;
-                }
-            }
-        });
-
-        return {
-            scope: {
-                title: '='
-            },
-            transclude: true,
-            templateUrl: 'ribbon-backstage.html',
-            require: ['^ngRibbon', 'ngRibbonBackstage'],
-            controller: [BackstageController],
-            controllerAs: 'backstage',
-            bindToController: true,
-            link: function (scope, element, attrs, controllers) {
-                controllers[0].backstage = controllers[1];
-            }
-        };
-    })
-    .directive('ngRibbonTab', function () {
-        return {
-            scope: {
-                title: '=',
-                contextual: '@?'
-            },
-            template: '<div class="tab" ng-transclude ng-show="tab.active"></div>',
-            transclude: true,
-            replace: true,
-            require: ['^ngRibbon', 'ngRibbonTab'],
-            controller: function () {},
-            link: {
-                pre: function (scope, element, attrs, ctrls) {
-                    var tabController = ctrls[1];
-                    tabController.title = scope.title;
                 },
-                post: function (scope, element, attrs, ctrls) {
-                    var ribbonController = ctrls[0];
-
-                    if (attrs.dynamic === 'true') {
-                        ribbonController.addDynamicTab(scope.title, scope.contextual, function (tab) {
-                            scope.tab = tab;
-                        })
-                    } else {
-                        scope.tab = ribbonController.addTab(scope.title, scope.contextual);
+                hasActive: {
+                    get: function () {
+                        return this.tabs.filter(function (tab) {
+                                return tab.active;
+                            }).length > 0;
+                    }
+                },
+                onVisibleChanged: {
+                    value: function () {
+                        if (this.visible && !this.parent.collapsed) {
+                            this.parent.activate(this.tabs[0]);
+                        } else if (this.hasActive) {
+                            this.parent.activate();
+                        }
                     }
                 }
-            }
-        };
-    })
-    .directive('ngRibbonGroup', function ($compile, dynamicRibbon) {
-        function getDynamicTemplate(command) {
-            var template = ['<ng-', command.type, ' command="', command.command, '"'];
-            if (command.popup) {
-                template = template.concat([' popup="', command.popup, '"']);
-            }
-            template = template.concat(['></ng-', command.type, '>']);
-            return template.join('');
-        }
+            });
 
-        return {
-            scope: {
-                title: '='
-            },
-            templateUrl: 'ribbon-group.html',
-            transclude: true,
-            require: '^ngRibbonTab',
-            link: function (scope, element, attrs, tabController) {
-                var transclude = angular.element(element[0].firstElementChild);
-                var commands = dynamicRibbon.commands(tabController.title, scope.title);
-                commands.forEach(function (command) {
-                    var template = getDynamicTemplate(command);
-                    var templateElement = angular.element(template);
-                    $compile(templateElement)(scope);
-                    transclude.append(templateElement);
-                });
+            function RibbonController(scope, element, document, contextualColors) {
+                this.scope = scope;
+                this.element = element;
+                this.document = document;
+                this.contextualColors = contextualColors;
+                this.tabs = [];
+                this.dynamicTabs = [];
+                this.contextualGroups = [];
+                this._collapsed = false;
             }
-        };
-    })
-    .factory('contextualColors', function () {
-        var index = 1;
 
-        return {
-            next: function () {
-                var color = index;
-                index += 1;
-                if (index > 6) {
-                    index = 1;
-                }
-                return color;
-            }
-        }
-    })
-    .provider('dynamicRibbon', function () {
-        function DynamicRibbonProvider() {
-            this._tabs = [];
-            this._groupCommands = {};
-        }
-
-        Object.defineProperties(DynamicRibbonProvider.prototype, {
-            registerTab: {
-                value: function (templateUrl) {
-                    this._tabs.push(templateUrl);
-                }
-            },
-            registerCommand: {
-                value: function (command) {
-                    var key = command.tab + '$' + command.group;
-                    var commands = this._groupCommands[key];
-                    if (!commands) {
-                        commands = this._groupCommands[key] = [];
+            function activate(tab) {
+                if (this.activeTab) {
+                    if (this.activeTab === tab) {
+                        if (this._collapsed) {
+                            this.clearActiveTab();
+                        }
+                        return;
                     }
-                    commands.push(command);
+                    this.clearActiveTab();
                 }
-            },
-            $get: {
-                value: function () {
-                    return new DynamicRibbonService(this);
+
+                if (!tab) {
+                    tab = this.tabs[0];
                 }
-            }
-        });
 
-        function DynamicRibbonService(provider) {
-            this.tabs = provider._tabs;
-            this._commands = provider._groupCommands;
-        }
+                this.activeTab = tab;
+                this.activeTab.active = true;
 
-        Object.defineProperties(DynamicRibbonService.prototype, {
-            commands: {
-                value: function (tabName, groupName) {
-                    var key = tabName + '$' + groupName;
-                    return this._commands[key] || [];
+                this.scope.$broadcast('tabActivated', {title: tab.title, contextual: tab.contextual});
+
+                if (this._collapsed) {
+                    this.globalClearActiveTab();
                 }
             }
-        });
 
-        return new DynamicRibbonProvider();
-    });
+            function toggleCollapse(tab) {
+                if (tab && !this._collapsed && !tab.active) {
+                    activate.call(this, tab);
+                    return;
+                }
+
+                this._collapsed = !this._collapsed;
+                if (this._collapsed) {
+                    this.clearActiveTab();
+                } else if (tab && !tab.active) {
+                    activate.call(this, tab);
+                }
+            }
+
+            Object.defineProperties(RibbonController.prototype, {
+                hasBackstage: {
+                    get: function () {
+                        return !!this.backstage;
+                    }
+                },
+                openBackstage: {
+                    value: function () {
+                        this.backstageOpen = true;
+                    }
+                },
+                closeBackstage: {
+                    value: function () {
+                        this.backstageOpen = false;
+                    }
+                },
+                collapsed: {
+                    get: function () {
+                        return this._collapsed;
+                    }
+                },
+                hasActiveTab: {
+                    get: function () {
+                        return !!this.activeTab;
+                    }
+                },
+                activate: {
+                    value: clickHandler(activate, toggleCollapse)
+                },
+                toggleCollapse: {
+                    value: toggleCollapse
+                },
+                globalClearActiveTab: {
+                    value: function () {
+                        if (this.globalRegistered) {
+                            return;
+                        }
+                        this.globalRegistered = true;
+                        var _this = this;
+                        this.document.one('click', function (e) {
+                            _this.globalRegistered = false;
+                            if (_this.element[0].contains(e.target) && !e.target.classList.contains('backstage-tab')) {
+                                return;
+                            }
+                            _this.clearActiveTab();
+                            _this.scope.$digest();
+                        });
+                    }
+                },
+                clearActiveTab: {
+                    value: function () {
+                        this.activeTab.active = false;
+                        this.activeTab = null;
+                    }
+                },
+                addTab: {
+                    value: function (title, contextualTitle) {
+                        var tab = {
+                            title: title,
+                            active: this.tabs.length === 0 && !contextualTitle,
+                            contextual: !!contextualTitle
+                        };
+
+                        if (tab.active) {
+                            this.activeTab = tab;
+                        }
+
+                        if (!contextualTitle) {
+                            this.tabs.push(tab);
+                        } else {
+                            this.addContextualTab(tab, contextualTitle);
+                        }
+                        return tab;
+                    }
+                },
+                addDynamicTab: {
+                    value: function (title, contextualTitle, addedCallback) {
+
+                        this.dynamicTabs.push({
+                            title: title,
+                            contextualTitle: contextualTitle,
+                            addedCallback: addedCallback
+                        });
+                    }
+                },
+                addDynamicTabs: {
+                    value: function () {
+                        this.dynamicTabs.forEach(function (tab) {
+                            tab.addedCallback(this.addTab(tab.title, tab.contextualTitle));
+                        }, this);
+                    }
+                },
+                addContextualTab: {
+                    value: function (tab, contextualTitle) {
+                        var contextual = this.findContextual(contextualTitle);
+                        if (!contextual) {
+                            contextual = new ContextualGroup(this, contextualTitle, this.contextualColors.next());
+                            this.contextualGroups.push(contextual);
+                        }
+                        contextual.tabs.push(tab);
+                    }
+                },
+                getCommand: {
+                    value: function (commandName) {
+                        return this.ribbonContext.commands[commandName];
+                    }
+                },
+                findContextual: {
+                    value: function (title) {
+                        var contextual = this.contextualGroups.filter(function (group) {
+                            return group.title === title;
+                        });
+                        return contextual.length > 0 ? contextual[0] : null;
+                    }
+                }
+            });
+
+            return {
+                scope: {
+                    title: '=',
+                    ribbonContext: '=context'
+                },
+                transclude: true,
+                templateUrl: 'ribbon.html',
+                controller: ['$scope', '$element', '$document', 'contextualColors', RibbonController],
+                controllerAs: 'ribbon',
+                bindToController: true,
+                compile: function (element) {
+                    var tabContents = angular.element(element[0].querySelector('.tab-content'));
+
+                    dynamicRibbon.tabs.forEach(function (tab) {
+                        var template = angular.element($templateCache.get(tab));
+                        template.attr('data-dynamic', true);
+                        tabContents.prepend(template);
+                    });
+
+                    return function link(scope, element, attrs, ctrl, transclude) {
+                        transclude(function (clone) {
+                            tabContents.prepend(clone);
+                        });
+                        ctrl.addDynamicTabs();
+                    };
+                }
+            };
+        })
+        .directive('ngRibbonTitle', function ($document, optimizedResize) {
+            return {
+                scope: {
+                    title: '='
+                },
+                require: '^ngRibbon',
+                templateUrl: 'ribbon-title.html',
+                link: function (scope, element) {
+                    var titleElement = element[0].querySelector('.title');
+
+                    calculatePositionAsync(titleElement);
+                    optimizedResize.add(function () {
+                        calculatePositionAsync(titleElement);
+                    });
+                    scope.$on('tabActivated', function () {
+                        calculatePositionAsync(titleElement);
+                    });
+                }
+            };
+
+            function calculatePositionAsync(titleElement) {
+                setTimeout(function () {
+                    var left = calculatePosition(titleElement);
+                    if (titleElement.style.left !== left) {
+                        titleElement.style.left = left;
+                    }
+                }, 0);
+            }
+
+            function calculatePosition(titleElement) {
+                var currentPosition = titleElement.getBoundingClientRect();
+                var left = $document[0].body.clientWidth / 2 - currentPosition.width / 2;
+                titleElement.style.display = 'none';
+                var overlap = document.elementFromPoint(left, currentPosition.top);
+                titleElement.style.display = '';
+                if (overlap && overlap.parentElement.classList.contains('contextual-group')) {
+                    var overlapPosition = overlap.getBoundingClientRect();
+                    return (overlapPosition.left + overlapPosition.width + 1) + 'px';
+                } else {
+                    return 'calc(50% - ' + (currentPosition.width / 2) + 'px)';
+                }
+            }
+        })
+        .directive('ngRibbonBackstage', function () {
+            function BackstageController() {
+                this.opened = false;
+            }
+
+            Object.defineProperties(BackstageController.prototype, {
+                open: {
+                    value: function () {
+                        this.opened = true;
+                    }
+                },
+                close: {
+                    value: function () {
+                        this.opened = false;
+                    }
+                }
+            });
+
+            return {
+                scope: {
+                    title: '='
+                },
+                require: ['^ngRibbon', 'ngRibbonBackstage'],
+                transclude: true,
+                template: '<div></div>',
+                controller: BackstageController,
+                controllerAs: 'backstage',
+                bindToController: true,
+                link: function (scope, element, attrs, controllers, transcludeFn) {
+                    var backstageController = controllers[1];
+                    backstageController.content = transcludeFn;
+
+                    var ribbonController = controllers[0];
+                    ribbonController.backstage = backstageController;
+                }
+            };
+        })
+        .directive('ngRibbonBackstageContent', function () {
+            return {
+                require: '^ngRibbon',
+                link: function (scope, element, attrs, ribbonController) {
+                    var backstageController = ribbonController.backstage;
+                    backstageController.content(function (clone) {
+                        element.empty();
+                        element.append(clone);
+                    });
+                }
+            }
+        })
+        .directive('ngRibbonTab', function () {
+            return {
+                scope: {
+                    title: '=',
+                    contextual: '@?'
+                },
+                template: '<div class="tab" ng-transclude ng-show="tab.active"></div>',
+                transclude: true,
+                replace: true,
+                require: ['^ngRibbon', 'ngRibbonTab'],
+                controller: function () {
+                },
+                link: {
+                    pre: function (scope, element, attrs, ctrls) {
+                        var tabController = ctrls[1];
+                        tabController.title = scope.title;
+                    },
+                    post: function (scope, element, attrs, ctrls) {
+                        var ribbonController = ctrls[0];
+
+                        if (attrs.dynamic === 'true') {
+                            ribbonController.addDynamicTab(scope.title, scope.contextual, function (tab) {
+                                scope.tab = tab;
+                            })
+                        } else {
+                            scope.tab = ribbonController.addTab(scope.title, scope.contextual);
+                        }
+                    }
+                }
+            };
+        })
+        .directive('ngRibbonGroup', function ($compile, dynamicRibbon) {
+            return {
+                scope: {
+                    title: '='
+                },
+                templateUrl: 'ribbon-group.html',
+                transclude: true,
+                require: '^ngRibbonTab',
+                link: function (scope, element, attrs, tabController) {
+                    var transclude = angular.element(element[0].firstElementChild);
+                    var commands = dynamicRibbon.commands(tabController.title, scope.title);
+                    commands.forEach(function (command) {
+                        var template = getDynamicTemplate(command);
+                        var templateElement = angular.element(template);
+                        $compile(templateElement)(scope);
+                        transclude.append(templateElement);
+                    });
+                }
+            };
+
+            function getDynamicTemplate(command) {
+                var template = ['<ng-', command.type, ' command="', command.command, '"'];
+                if (command.popup) {
+                    template = template.concat([' popup="', command.popup, '"']);
+                }
+                template = template.concat(['></ng-', command.type, '>']);
+                return template.join('');
+            }
+        })
+        .factory('contextualColors', function () {
+            var index = 1;
+
+            return {
+                next: function () {
+                    var color = index;
+                    index += 1;
+                    if (index > 6) {
+                        index = 1;
+                    }
+                    return color;
+                }
+            }
+        })
+        .provider('dynamicRibbon', function () {
+            function DynamicRibbonProvider() {
+                this._tabs = [];
+                this._groupCommands = {};
+            }
+
+            Object.defineProperties(DynamicRibbonProvider.prototype, {
+                registerTab: {
+                    value: function (templateUrl) {
+                        this._tabs.push(templateUrl);
+                    }
+                },
+                registerCommand: {
+                    value: function (command) {
+                        var key = command.tab + '$' + command.group;
+                        var commands = this._groupCommands[key];
+                        if (!commands) {
+                            commands = this._groupCommands[key] = [];
+                        }
+                        commands.push(command);
+                    }
+                },
+                $get: {
+                    value: function () {
+                        return new DynamicRibbonService(this);
+                    }
+                }
+            });
+
+            function DynamicRibbonService(provider) {
+                this.tabs = provider._tabs;
+                this._commands = provider._groupCommands;
+            }
+
+            Object.defineProperties(DynamicRibbonService.prototype, {
+                commands: {
+                    value: function (tabName, groupName) {
+                        var key = tabName + '$' + groupName;
+                        return this._commands[key] || [];
+                    }
+                }
+            });
+
+            return new DynamicRibbonProvider();
+        });
+}());
 
 angular.module('ngRibbon.menu', [])
     .directive('ngRibbonMenu', function () {
@@ -518,7 +546,6 @@ angular.module('ngRibbon.menu', [])
 (function () {
     function LargeButtonController() {
     }
-
     Object.defineProperties(LargeButtonController.prototype, {
         setCommand: {
             value: function (command) {
@@ -560,9 +587,7 @@ angular.module('ngRibbon.menu', [])
 
         this.actions.register(this.scope);
     }
-
     PopupButtonController.prototype = Object.create(LargeButtonController.prototype);
-
     PopupButtonController.EmptyCommands = [];
     Object.defineProperties(PopupButtonController.prototype, {
         setCommand: {

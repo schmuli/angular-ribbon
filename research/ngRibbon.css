@@ -27,6 +27,7 @@ ng-ribbon .ribbon .ribbon-title {
     position: relative;
     z-index: 1;
     background-color: white;
+    border-bottom: solid 1px #d4d4d4;
 }
 
 ng-ribbon .ribbon .tab-content {
@@ -84,12 +85,12 @@ ng-ribbon .ribbon.collapsed {
     overflow: visible;
 }
 
-ng-ribbon .ribbon.collapsed .tabs {
+ng-ribbon .ribbon.collapsed .ribbon-title {
     border-bottom-color: transparent;
 }
 
-ng-ribbon .ribbon.collapsed .tabs .tab-name {
-    margin-bottom: 0;
+ng-ribbon .ribbon.collapsed.open .ribbon-title {
+    border-bottom-color: #d4d4d4;
 }
 
 ng-ribbon .ribbon.collapsed .tab-content {
@@ -142,8 +143,7 @@ ng-ribbon .ribbon.collapsed.open .ribbon-collapse {
 }
 
 ng-ribbon .ribbon.collapsed .ribbon-collapse #thumbtack {
-    display: block;
-    transform: rotate(90deg);
+    display: inline;
 }
 
 ng-ribbon .ribbon.collapsed .ribbon-collapse #angle-up {
@@ -154,10 +154,7 @@ ng-ribbon .ribbon.collapsed .ribbon-collapse #angle-up {
 
 ng-ribbon .ribbon .tabs {
     width: 100%;
-}
-
-ng-ribbon .ribbon.open .tabs {
-    border-bottom: solid 1px #d4d4d4;
+    margin-bottom: -1px;
 }
 
 ng-ribbon .tabs .tab-name {
@@ -171,10 +168,6 @@ ng-ribbon .tabs .tab-name {
     border-color: transparent;
 }
 
-ng-ribbon .ribbon.open .tabs .tab-name {
-    margin-bottom: -1px;
-}
-
 ng-ribbon .tabs .tab-name.active {
     border-color: #d4d4d4;
     border-bottom: solid 1px white;
@@ -182,15 +175,16 @@ ng-ribbon .tabs .tab-name.active {
     background-color: white;
 }
 
-ng-ribbon .tabs .tab-name.backstage {
+ng-ribbon .tabs .tab-name.backstage-tab {
     background-color: #2b579a;
+    border-bottom: solid 1px;
     border-color: #2b579a;
     color: white;
     padding-left: 20px;
     padding-right: 20px;
 }
 
-ng-ribbon .tabs .tab-name.backstage:hover {
+ng-ribbon .tabs .tab-name.backstage-tab:hover {
     background-color: #3e6db5;
     border-color: #3e6db5;
 }
@@ -271,7 +265,7 @@ ng-ribbon .contextual-group .tab-name.active {
 
 /* Backstage */
 
-ng-ribbon .ribbon ng-ribbon-backstage {
+ng-ribbon .ribbon .backstage {
     position: fixed;
     top: 0;
     left: 0;
@@ -282,11 +276,11 @@ ng-ribbon .ribbon ng-ribbon-backstage {
     transform: translateX(-100%);
 }
 
-ng-ribbon .ribbon.backstage-open-remove-active  ng-ribbon-backstage {
+ng-ribbon .ribbon.backstage-open-remove-active  .backstage {
     animation: backstage-out 100ms linear;
 }
 
-ng-ribbon .ribbon.backstage-open ng-ribbon-backstage {
+ng-ribbon .ribbon.backstage-open .backstage {
     transform: translateX(0);
 }
 
@@ -294,7 +288,7 @@ ng-ribbon .ribbon.backstage-open .ribbon-title {
     z-index: auto;
 }
 
-ng-ribbon .ribbon.backstage-open-add ng-ribbon-backstage {
+ng-ribbon .ribbon.backstage-open-add .backstage {
     animation: backstage-in 100ms linear;
 }
 
@@ -316,7 +310,7 @@ ng-ribbon .ribbon.backstage-open-add ng-ribbon-backstage {
     }
 }
 
-ng-ribbon .ribbon ng-ribbon-backstage .backstage-close {
+ng-ribbon .ribbon .backstage .backstage-close {
     position: absolute;
     width: 34px;
     height: 34px;
@@ -327,15 +321,15 @@ ng-ribbon .ribbon ng-ribbon-backstage .backstage-close {
     margin: 20px 0 15px 20px;
 }
 
-ng-ribbon .ribbon ng-ribbon-backstage .backstage-close:hover {
+ng-ribbon .ribbon .backstage .backstage-close:hover {
     border-color: #97B1D8;
 }
 
-ng-ribbon .ribbon ng-ribbon-backstage .backstage-close:hover path {
+ng-ribbon .ribbon .backstage .backstage-close:hover path {
     fill: #97B1D8;
 }
 
-ng-ribbon .ribbon ng-ribbon-backstage .backstage-content {
+ng-ribbon .ribbon .backstage .backstage-content {
     height: 100%;
 }
 
