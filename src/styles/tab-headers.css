@@ -1,11 +1,11 @@
-ng-ribbon > .ribbon-title > .tabs {
-    height: 55px;
+ng-ribbon .ribbon .tabs {
+    width: 100%;
+    margin-bottom: -1px;
 }
 
-ng-ribbon > .ribbon-title > .tabs .tab-name {
+ng-ribbon .tabs .tab-name {
     display: inline-block;
     cursor: pointer;
-    margin-top: 30px;
     padding: 4px 10px;
     text-transform: uppercase;
     border-top: solid 1px;
@@ -14,22 +14,23 @@ ng-ribbon > .ribbon-title > .tabs .tab-name {
     border-color: transparent;
 }
 
-ng-ribbon > .ribbon-title > .tabs .tab-name.backstage-tab {
-    color: white;
-    background-color: #2b579a;
-    padding-left: 20px;
-    padding-right: 20px;
-    border-bottom: solid 1px;
-    border-color: #2b579a;
-}
-
-ng-ribbon > .ribbon-title > .tabs .tab-name.active {
+ng-ribbon .tabs .tab-name.active {
     border-color: #d4d4d4;
     border-bottom: solid 1px white;
     color: #2b579a;
+    background-color: white;
 }
 
-ng-ribbon > .ribbon-title > .tabs .tab-name.backstage-tab:hover {
+ng-ribbon .tabs .tab-name.backstage-tab {
+    background-color: #2b579a;
+    border-bottom: solid 1px;
+    border-color: #2b579a;
+    color: white;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+ng-ribbon .tabs .tab-name.backstage-tab:hover {
     background-color: #3e6db5;
     border-color: #3e6db5;
 }

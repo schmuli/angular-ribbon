@@ -1,0 +1,53 @@
+ng-ribbon .ribbon ng-ribbon-menu {
+    display: flex;
+    height: 100%;
+}
+
+ng-ribbon .ribbon ng-ribbon-menu .ribbon-menu {
+    width: 125px;
+    background-color: #2b579a;
+}
+
+ng-ribbon .ribbon ng-ribbon-menu .ribbon-menu ul {
+    list-style: none;
+    margin: 69px 0 0;
+    padding: 0;
+}
+
+ng-ribbon .ribbon ng-ribbon-menu .ribbon-menu li {
+    color: white;
+    line-height: 40px;
+    cursor: pointer;
+    padding: 0 0 0 20px;
+}
+
+ng-ribbon .ribbon ng-ribbon-menu .ribbon-menu li.separator {
+    margin: 10px 20px;
+    padding: 0;
+    border-bottom: solid 1px #3E6DB5;
+}
+
+ng-ribbon .ribbon ng-ribbon-menu .ribbon-menu li.selected {
+    background-color: #3e6db5;
+}
+
+ng-ribbon .ribbon ng-ribbon-menu .ribbon-menu li:hover {
+    background-color: #19478a;
+}
+
+ng-ribbon .ribbon ng-ribbon-menu .ribbon-menu-content {
+    flex: 1;
+    padding: 30px;
+}
+
+ng-ribbon .ribbon ng-ribbon-menu .ribbon-menu-content ng-ribbon-menu-item {
+    display: none;
+}
+
+ng-ribbon .ribbon ng-ribbon-menu .ribbon-menu-content ng-ribbon-menu-item.selected {
+    display: block;
+}
+
+ng-ribbon .ribbon ng-ribbon-menu .ribbon-menu-content ng-ribbon-menu-separator {
+    display: none;
+}

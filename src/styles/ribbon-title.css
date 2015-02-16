@@ -1,12 +1,32 @@
-ng-ribbon > .ribbon-title {
+ng-ribbon .ribbon .ribbon-title {
     position: relative;
+    z-index: 1;
     background-color: white;
-    display: flex;
     border-bottom: solid 1px #d4d4d4;
 }
 
-ng-ribbon > .ribbon-title > .document-title > div {
+ng-ribbon .ribbon.collapsed .ribbon-title {
+    border-bottom-color: transparent;
+}
+
+ng-ribbon .ribbon.collapsed.open .ribbon-title {
+    border-bottom-color: #d4d4d4;
+}
+
+ng-ribbon .ribbon.backstage-open .ribbon-title {
+    z-index: auto;
+}
+
+ng-ribbon .ribbon .ribbon-title ng-ribbon-title {
+    display: block;
+    height: 30px;
     line-height: 30px;
-    position: relative;
-    z-index: 1010;
+    font-size: 12px;
+}
+
+ng-ribbon .ribbon .ribbon-title ng-ribbon-title > .title {
+    padding: 0 5px;
+    position: absolute;
+    z-index: 1000;
+    transition: left 100ms linear;
 }

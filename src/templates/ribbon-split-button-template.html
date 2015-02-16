@@ -1,0 +1,15 @@
+<div class="button split-button"
+     ng-class="{ disabled: button.disabled, 'open': button.opened }"
+     ng-show="button.visible">
+    <div class="image" ng-click="button.execute()">
+        <img ng-src="{{ button.image }}"/>
+    </div>
+    <div class="title"
+         ng-click="button.open($event)">
+        <span ng-is-multiline="">{{ button.title }}</span>
+        <svg width="5px" height="3px">
+            <path d="M0,0L2.5,3L5,0"/>
+        </svg>
+    </div>
+    <div class="ribbon-popup" ng-include="button.popupUrl"></div>
+</div>

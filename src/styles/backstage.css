@@ -1,38 +1,45 @@
-ng-ribbon .backstage {
+ng-ribbon .ribbon .backstage {
     position: fixed;
     top: 0;
-    bottom: 0;
     left: 0;
+    bottom: 0;
     right: 0;
     background-color: white;
-    z-index: 1000;
+    z-index: 990;
     transform: translateX(-100%);
-    transition: transform 0s linear 100ms;
 }
 
-ng-ribbon .backstage > .document-title {
-    position: absolute;
-    text-align: center;
-    width: 100%;
-    line-height: 30px;
+ng-ribbon .ribbon.backstage-open-remove-active  .backstage {
+    animation: backstage-out 100ms linear;
 }
 
-ng-ribbon .backstage > .backstage-panel {
-    height: 100%;
-    animation: hide-backstage 100ms linear;
-}
-
-ng-ribbon.backstage-open .backstage {
+ng-ribbon .ribbon.backstage-open .backstage {
     transform: translateX(0);
-    transition: transform 0s linear 0ms;
 }
 
-ng-ribbon.backstage-open .backstage > .backstage-panel {
-    transform: translateX(0);
-    animation: show-backstage 100ms linear;
+ng-ribbon .ribbon.backstage-open-add .backstage {
+    animation: backstage-in 100ms linear;
 }
 
-ng-ribbon .backstage .backstage-panel > .backstage-close {
+@keyframes backstage-in {
+    from {
+        transform: translateX(-75px);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+@keyframes backstage-out {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-75px);
+    }
+}
+
+ng-ribbon .ribbon .backstage .backstage-close {
     position: absolute;
     width: 34px;
     height: 34px;
@@ -43,32 +50,14 @@ ng-ribbon .backstage .backstage-panel > .backstage-close {
     margin: 20px 0 15px 20px;
 }
 
-ng-ribbon .backstage .backstage-panel > .backstage-close:hover {
+ng-ribbon .ribbon .backstage .backstage-close:hover {
     border-color: #97B1D8;
 }
 
-ng-ribbon .backstage .backstage-panel > .backstage-close:hover path {
+ng-ribbon .ribbon .backstage .backstage-close:hover path {
     fill: #97B1D8;
 }
 
-ng-ribbon .backstage .backstage-panel > .backstage-content {
+ng-ribbon .ribbon .backstage .backstage-content {
     height: 100%;
-}
-
-@keyframes show-backstage {
-    from {
-        transform: translateX(-75px);
-    }
-    to {
-        transform: translateX(0);
-    }
-}
-
-@keyframes hide-backstage {
-    from {
-        transform: translateX(0);
-    }
-    to {
-        transform: translateX(-75px);
-    }
 }

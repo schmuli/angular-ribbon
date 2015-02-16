@@ -1,0 +1,130 @@
+ng-ribbon .button {
+    min-width: 36px;
+    max-width: 57px;
+    cursor: pointer;
+    border: solid 1px transparent;
+    position: relative;
+}
+
+ng-ribbon .button.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+ng-ribbon .drop-button,
+ng-ribbon .large-button {
+    padding: 2px;
+}
+
+ng-ribbon .drop-button:hover,
+ng-ribbon .large-button:hover {
+    background-color: #D5E1F2;
+}
+
+ng-ribbon .drop-button:active,
+ng-ribbon .large-button:active {
+    background-color: #C2D5F2;
+}
+
+ng-ribbon .button img {
+    min-width: 28px;
+    max-width: 36px;
+    min-height: 28px;
+    max-height: 33px;
+    display: block;
+    margin: 0 auto;
+}
+
+ng-ribbon .large-button > .title {
+    text-align: center;
+    overflow: hidden;
+    max-width: 51px;
+}
+
+ng-ribbon .large-button > img,
+ng-ribbon .drop-button > img {
+    margin-bottom: 5px;
+}
+
+ng-ribbon .split-button {
+    display: flex;
+    flex-direction: column;
+}
+
+ng-ribbon .split-button:hover {
+    border-color: #D5E1F2;
+}
+
+ng-ribbon .split-button:active {
+    border-color: #C2D5F2;
+}
+
+ng-ribbon .split-button .image {
+    padding: 2px 0;
+}
+
+ng-ribbon .split-button img {
+    margin-bottom: 3px;
+}
+
+ng-ribbon .split-button .title {
+    flex: 1;
+    padding: 0 2px;
+}
+
+ng-ribbon .button .title {
+    text-align: center;
+}
+
+ng-ribbon .button .title > svg {
+    display: block;
+    margin: 6px auto 0;
+}
+
+ng-ribbon .button .title > .multiline + svg {
+    display: inline;
+    vertical-align: top;
+}
+
+ng-ribbon .split-button .image:hover,
+ng-ribbon .split-button .title:hover {
+    background-color: #D5E1F2;
+}
+
+ng-ribbon .drop-button.open,
+ng-ribbon .split-button.open .image,
+ng-ribbon .split-button.open .title,
+ng-ribbon .split-button .image:active,
+ng-ribbon .split-button .title:active {
+    background-color: #C2D5F2;
+}
+
+ng-ribbon .ribbon-popup {
+    display: none;
+    position: absolute;
+    top: 100%;
+    border: solid 1px #C6C6C6;
+    -webkit-box-shadow: 1px 1px 5px #C6C6C6;
+    -moz-box-shadow: 1px 1px 5px #C6C6C6;
+    box-shadow: 1px 1px 5px #C6C6C6;
+    padding: 1px;
+    background-color: white;
+    min-width: 57px;
+    max-width: 204px;
+    max-height: calc(100vh - 150px);
+    overflow: auto;
+}
+
+ng-ribbon .button.open .ribbon-popup {
+    display: block;
+    animation: show-popup 50ms linear;
+}
+
+@keyframes show-popup {
+    from {
+        transform: translateY(-10px);
+    }
+    to {
+        transform: translateY(0);
+    }
+}

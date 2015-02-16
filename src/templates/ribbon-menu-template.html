@@ -1,0 +1,10 @@
+<div class="ribbon-menu">
+    <ul>
+        <li ng-repeat="menuItem in menu.menuItems"
+            ng-class="{ 'selected': menuItem.selected, 'separator': menuItem.separator }"
+            ng-click="menu.select(menuItem)">
+            {{ menuItem.title }}
+        </li>
+    </ul>
+</div>
+<div class="ribbon-menu-content" ng-transclude=""></div>

@@ -1,3 +1,6 @@
-ng-ribbon > .ribbon-title > .quick-access {
+ng-ribbon .quick-access {
     position: absolute;
+    top: 0;
+    padding: 0 5px;
+    font-size: 12px;
 }

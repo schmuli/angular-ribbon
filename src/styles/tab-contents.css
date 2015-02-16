@@ -1,33 +1,91 @@
-ng-ribbon > .tab-content {
+ng-ribbon .ribbon .tab-content {
     position: absolute;
     top: 56px;
     height: 104px;
     width: 100%;
-    background-color: #ffffff;
+    background-color: white;
+    border-bottom: solid 1px #d5d5d5;
+}
+
+ng-ribbon .ribbon.collapsed .tab-content {
+    z-index: -1;
     transform: translateY(-100%);
-    z-index: 990;
-    animation: hide-tab-content 100ms linear;
+    transition: transform .3s linear, border 0s linear;
+    border-bottom-color: transparent;
 }
 
-ng-ribbon.open > .tab-content {
-    transform: translateY(0);
-    animation: show-tab-content 300ms linear;
+ng-ribbon .ribbon.collapsed.backstage-open .tab-content {
+    z-index: auto;
+    transform: initial;
+    transition-duration: 0s;
 }
 
-@keyframes show-tab-content {
-    from {
-        transform: translateY(-100%);
-    }
-    to {
-        transform: translateY(0);
-    }
+ng-ribbon .ribbon.open .tab-content {
+    transform: initial;
+    transition: transform .3s linear, border 0s linear;
 }
 
-@keyframes hide-tab-content {
-    from {
-        transform: translateY(0);
-    }
-    to {
-        transform: translateY(-100%);
-    }
+ng-ribbon .ribbon .tab-content > .dynamic-tabs {
+    height: 100%;
+}
+
+ng-ribbon .ribbon .tab-content .tab {
+    display: flex;
+    height: 100%;
+    margin-right: 30px;
+}
+
+ng-ribbon .ribbon .tab-content ng-ribbon-group {
+    display: flex;
+    flex-direction: column;
+    margin: 3px 0;
+    border-right: solid 1px #E1E1E1;
+    min-width: 60px;
+}
+
+ng-ribbon .ribbon .tab-content ng-ribbon-group > [ng-transclude] {
+    flex: 1;
+    padding: 7px 7px 0 7px;
+    display: flex;
+    justify-content: center;
+}
+
+ng-ribbon .ribbon .tab-content ng-ribbon-group > .group-label {
+    text-align: center;
+    color: #666666;
+    padding: 0 2px;
+}
+
+ng-ribbon .ribbon .tab-content .ribbon-collapse {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 29px;
+    height: 17px;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+ng-ribbon .ribbon .tab-content .ribbon-collapse:hover {
+    background-color: #D5E1F2;
+}
+
+ng-ribbon .ribbon.collapsed .tab-content .ribbon-collapse {
+    display: none;
+}
+
+ng-ribbon .ribbon.collapsed.open .tab-content .ribbon-collapse {
+    display: block;
+}
+
+ng-ribbon .ribbon .tab-content .ribbon-collapse #thumbtack {
+    display: none;
+}
+
+ng-ribbon .ribbon.collapsed .tab-content .ribbon-collapse #thumbtack {
+    display: inline;
+}
+
+ng-ribbon .ribbon.collapsed .tab-content .ribbon-collapse #angle-up {
+    display: none;
 }
