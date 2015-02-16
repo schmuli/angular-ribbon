@@ -48,10 +48,11 @@
                 }
             });
 
-            function RibbonController(scope, element, document, contextualColors) {
+            function RibbonController(scope, element, document, events, contextualColors) {
                 this.scope = scope;
                 this.element = element;
                 this.document = document;
+                this.events = events;
                 this.contextualColors = contextualColors;
                 this.tabs = [];
                 this.dynamicTabs = [];
@@ -77,7 +78,7 @@
                 this.activeTab = tab;
                 this.activeTab.active = true;
 
-                this.scope.$broadcast('tabActivated', {title: tab.title, contextual: tab.contextual});
+                this.events.trigger('tabActivated', {title: tab.title, contextual: tab.contextual});
 
                 if (this._collapsed) {
                     this.globalClearActiveTab();
@@ -102,16 +103,6 @@
                 hasBackstage: {
                     get: function () {
                         return !!this.backstage;
-                    }
-                },
-                openBackstage: {
-                    value: function () {
-                        this.backstageOpen = true;
-                    }
-                },
-                closeBackstage: {
-                    value: function () {
-                        this.backstageOpen = false;
                     }
                 },
                 collapsed: {
@@ -222,7 +213,7 @@
                 },
                 transclude: true,
                 templateUrl: 'ribbon.html',
-                controller: ['$scope', '$element', '$document', 'contextualColors', RibbonController],
+                controller: ['$scope', '$element', '$document', 'ribbonEvents', 'contextualColors', RibbonController],
                 controllerAs: 'ribbon',
                 bindToController: true,
                 compile: function (element) {
@@ -243,7 +234,7 @@
                 }
             };
         })
-        .directive('ngRibbonTitle', function ($document, optimizedResize) {
+        .directive('ngRibbonTitle', function ($document, ribbonEvents, optimizedResize) {
             return {
                 scope: {
                     title: '='
@@ -257,7 +248,7 @@
                     optimizedResize.add(function () {
                         calculatePositionAsync(titleElement);
                     });
-                    scope.$on('tabActivated', function () {
+                    ribbonEvents.on('tabActivated', function () {
                         calculatePositionAsync(titleElement);
                     });
                 }
@@ -584,8 +575,6 @@ angular.module('ngRibbon.menu', [])
     function PopupButtonController(scope, actions) {
         this.scope = scope;
         this.actions = actions;
-
-        this.actions.register(this.scope);
     }
     PopupButtonController.prototype = Object.create(LargeButtonController.prototype);
     PopupButtonController.EmptyCommands = [];
@@ -692,9 +681,25 @@ angular.module('ngRibbon.menu', [])
                 }
             }
         })
-        .factory('actions', function ($document) {
+        .factory('actions', function ($document, ribbonEvents) {
             var controller = null;
-            var globalRegistered = false;
+
+            ribbonEvents.on('tabActivated', function () {
+                close(false);
+            });
+
+            return {
+                open: function (ctrl, autoClose) {
+                    close(false);
+
+                    controller = ctrl;
+                    controller._opened = true;
+
+                    if (autoClose) {
+                        $document.on('click', globalClose);
+                    }
+                }
+            };
 
             function close(digest) {
                 if (controller === null) {
@@ -703,28 +708,12 @@ angular.module('ngRibbon.menu', [])
 
                 controller.close(digest);
                 controller = null;
+
+                $document.off('click', globalClose);
             }
 
-            return {
-                register: function (scope) {
-                    scope.$on('tabActivated', function () {
-                        close(false);
-                    });
-                },
-                open: function (ctrl, autoClose) {
-                    close(false);
-
-                    controller = ctrl;
-                    controller._opened = true;
-
-                    if (autoClose && !globalRegistered) {
-                        globalRegistered = true;
-                        $document.one('click', function () {
-                            close(true);
-                            globalRegistered = false;
-                        });
-                    }
-                }
+            function globalClose() {
+                close(true);
             }
         });
 }());
@@ -767,37 +756,37 @@ angular.module('ngRibbon.utils', [])
         }
     })
     .factory('clickHandler', function ($timeout) {
+        /*
+         var action = firstClick;
+         var timerPromise;
+         var ignoreSecondClick = false;
+
+         function firstClick() {
+             ignoreSecondClick = onClick && onClick.apply(this, arguments);
+
+             action = secondClick;
+
+             timerPromise = $timeout(function () {
+                 action = firstClick;
+             }, 200);
+         }
+
+         function secondClick() {
+             if (!ignoreSecondClick) {
+                 onDoubleClick && onDoubleClick.apply(this, arguments);
+             }
+
+             action = firstClick;
+             timerPromise && $timeout.cancel(timerPromise);
+         }
+
+         return function () {
+             action.apply(this, arguments);
+         }
+         */
         return function (onClick, onDoubleClick) {
-            /*
-             //var action = firstClick;
-             //var timerPromise;
-             //var ignoreSecondClick = false;
-             //
-             //function firstClick() {
-             //    ignoreSecondClick = onClick && onClick.apply(this, arguments);
-             //
-             //    action = secondClick;
-             //
-             //    timerPromise = $timeout(function () {
-             //        action = firstClick;
-             //    }, 200);
-             //}
-             //
-             //function secondClick() {
-             //    if (!ignoreSecondClick) {
-             //        onDoubleClick && onDoubleClick.apply(this, arguments);
-             //    }
-             //
-             //    action = firstClick;
-             //    timerPromise && $timeout.cancel(timerPromise);
-             //}
-             //
-             //return function () {
-             //    action.apply(this, arguments);
-             //}
-             */
-            var index = 0;
             var clicks = 0;
+
             return function () {
                 clicks++;
 
@@ -805,23 +794,21 @@ angular.module('ngRibbon.utils', [])
                 var _this = this;
                 if (clicks === 1) {
                     $timeout(function () {
-                        if (clicks == 1) {
-                            onClick.apply(_this, args);
-                        } else {
-                            onDoubleClick.apply(_this, args);
-                        }
+                        (clicks === 1 ? onClick : onDoubleClick).apply(_this, args);
                         clicks = 0;
                     }, 200);
                 }
-            }
-        }
+            };
+        };
     })
-    .directive('ngIsMultiline', function () {
-        function checkMultiline(el) {
-            if (el.getClientRects().length > 1) {
-                el.classList.add('multiline');
-            }
-        }
+    .directive('ngIsMultiline', function (ribbonEvents) {
+        return function link(scope, element) {
+            setupCheck({
+                el: element[0],
+                off: null,
+                scope: scope
+            });
+        };
 
         function setupCheck(params) {
             setTimeout(function () {
@@ -838,17 +825,25 @@ angular.module('ngRibbon.utils', [])
 
         function wait(params) {
             if (!params.off) {
-                params.off = params.scope.$on('tabActivated', function () {
+                params.off = ribbonEvents.on('tabActivated', function () {
                     setupCheck(params);
                 });
             }
         }
 
-        return function link(scope, element) {
-            setupCheck({
-                el: element[0],
-                off: null,
-                scope: scope
-            });
+        function checkMultiline(el) {
+            if (el.getClientRects().length > 1) {
+                el.classList.add('multiline');
+            }
+        }
+    })
+    .factory('ribbonEvents', function ($rootScope) {
+        return {
+            trigger: function (event, args) {
+                return $rootScope.$emit('ribbonEvents-' + event, args);
+            },
+            on: function (event, callback) {
+                return $rootScope.$on('ribbonEvents-' + event, callback);
+            }
         };
     });
