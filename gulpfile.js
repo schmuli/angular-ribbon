@@ -11,6 +11,7 @@ var config = {
 
 gulp.task('build', ['build/javascript']);
 
+var debug = require('gulp-debug');
 gulp.task('build/javascript', ['build/templates'], function () {
     return gulp.src(['ngRibbon.prefix', 'dist/templates.js', 'src/js/**/*.js', 'ngRibbon.suffix'])
         .pipe(plugins.sourcemaps.init())

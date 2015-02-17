@@ -1,7 +1,7 @@
 class OptimizedResize {
     constructor($window, $timeout) {
         this.window = $window;
-        this.timeout = $window.requestAnimationFrame || (callback => $timeout(callback, 66, false));
+        this.$timeout = $timeout;
 
         this.callbacks = [];
         this.running = false;
@@ -22,12 +22,18 @@ class OptimizedResize {
     resize() {
         if (!this.running) {
             this.running = true;
-            this.timeout(() => this.runCallbacks);
+            this.timeout(() => this.runCallbacks());
         }
     }
 
     runCallbacks() {
         this.callbacks.forEach(callback => callback());
         this.running = false;
+    }
+    
+    timeout(callback) {
+        this.window.requestAnimationFrame
+            ? this.window.requestAnimationFrame(callback)
+            : this.$timeout(callback, 66, false);
     }
 }

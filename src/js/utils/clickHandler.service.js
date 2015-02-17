@@ -39,7 +39,7 @@ var ClickHandler = function ($timeout) {
                 $timeout(function () {
                     (clicks === 1 ? onClick : onDoubleClick).apply(_this, args);
                     clicks = 0;
-                }, 200, false);
+                }, 200);
             }
         };
     };

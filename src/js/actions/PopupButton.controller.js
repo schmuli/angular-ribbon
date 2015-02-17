@@ -1,4 +1,8 @@
 class PopupButtonController extends LargeButtonController {
+    get opened() {
+        return this.visible && !this.disabled && this._opened;
+    }
+
     constructor(scope, actions) {
         this.scope = scope;
         this.actions = actions;
@@ -9,10 +13,6 @@ class PopupButtonController extends LargeButtonController {
     setCommand(command, popupUrl) {
         super.setCommand(command);
         this.popupUrl = popupUrl;
-    }
-
-    opened() {
-        return this.visible && !this.disabled && this._opened;
     }
 
     open(e) {

@@ -1,4 +1,8 @@
 class RibbonController {
+    get hasBackstage() {
+        return !!this.backstage;
+    }
+
     get collapsed() {
         return this._collapsed;
     }
@@ -14,7 +18,7 @@ class RibbonController {
         this.events = events;
         this.contextualColors = contextualColors;
 
-        this.activate = clickHandler(this.activate, this.toggleCollapse);
+        this.activate = clickHandler(this.activateInternal, this.toggleCollapse);
 
         this.tabs = [];
         this.dynamicTabs = [];
@@ -23,11 +27,7 @@ class RibbonController {
         this._collapsed = false;
     }
 
-    hasBackstage() {
-        return !!this.backstage;
-    }
-
-    activate(tab) {
+    activateInternal(tab) {
         if (this.activeTab) {
             if (this.activeTab === tab) {
                 if (this._collapsed) {
@@ -54,7 +54,7 @@ class RibbonController {
 
     toggleCollapse(tab) {
         if (tab && !this._collapsed && !tab.active) {
-            activate.call(this, tab);
+            this.activateInternal(tab);
             return;
         }
 
@@ -62,7 +62,7 @@ class RibbonController {
         if (this._collapsed) {
             this.clearActiveTab();
         } else if (tab && !tab.active) {
-            activate.call(this, tab);
+            this.activateInternal(tab);
         }
     }
 

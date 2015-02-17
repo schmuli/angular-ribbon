@@ -1,22 +1,22 @@
 class LargeButtonController {
-    setCommand(command) {
-        this.command = command;
-    }
-
-    visible() {
+    get visible() {
         return !!this.command && (!this.command.hasOwnProperty('visible') || this.command.visible);
     }
 
-    disabled() {
+    get disabled() {
         return !!this.command && this.command.disabled;
     }
 
-    title() {
+    get title() {
         return !!this.command ? this.command.title : '';
     }
 
-    image() {
+    get image() {
         return !!this.command ? this.command.image : '';
+    }
+
+    setCommand(command) {
+        this.command = command;
     }
 
     execute() {
