@@ -1,4 +1,4 @@
-var clickHandler = function ($timeout) {
+var ClickHandler = function ($timeout) {
     /*
      var action = firstClick;
      var timerPromise;

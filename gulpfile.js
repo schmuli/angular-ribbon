@@ -13,9 +13,15 @@ var config = {
 };
 
 gulp.task('debug', ['build/templates'], function () {
-    return gulp.src(['ngRibbon.prefix', 'src/js/**/!(module)*.js', 'src/js/**/module.js', 'dist/templates.js', 'ngRibbon.suffix'])
-        .pipe(plugins.concat('test.js'))
-        .pipe(gulp.dest(config.destination));
+    //return gulp.src(['ngRibbon.prefix', 'src/js/**/!(module)*.js', 'src/js/**/module.js', 'dist/templates.js', 'ngRibbon.suffix'])
+    //    .pipe(plugins.concat('test.js'))
+    //    .pipe(gulp.dest(config.destination));
+    var debug = require('gulp-debug');
+    var angularOrder = require('./gulp-angular-order');
+    return gulp.src('src/js/**/*.js')
+        .pipe(angularOrder())
+        .pipe(debug())
+        ;
 });
 
 gulp.task('build/javascript', function () {

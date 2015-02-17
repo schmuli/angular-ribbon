@@ -1,6 +1,6 @@
 angular.module('ngRibbon', ['ngAnimate', 'ngRibbon.actions', 'ngRibbon.menu', 'ngRibbon.utils', 'ngRibbon.templates'])
     .provider('dynamicRibbon', [DynamicRibbonProvider])
-    .factory('contextualColors', [contextualColors])
+    .service('contextualColors', [ContextualColors])
     .controller('RibbonController', ['$scope', '$element', '$document', 'ribbonEvents', 'contextualColors', 'clickHandler', RibbonController])
     .controller('BackstageController', [BackstageController])
     .directive('ngRibbon', ['$templateCache', 'clickHandler', 'dynamicRibbon', ngRibbonDirective])

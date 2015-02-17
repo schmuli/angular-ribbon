@@ -1,5 +1,5 @@
 angular.module('ngRibbon.utils', [])
-    .factory('clickHandler', ['$timeout', clickHandler])
-    .factory('optimizedResize', ['$window', '$timeout', optimizedResize])
-    .factory('ribbonEvents', ['$rootScope', ribbonEvents])
+    .factory('clickHandler', ['$timeout', ClickHandler])
+    .factory('optimizedResize', ['$window', '$timeout', OptimizedResize])
+    .factory('ribbonEvents', ['$rootScope', RibbonEvents])
     .directive('ngIsMultiline', ['$timeout', 'ribbonEvents', ngIsMultilineDirective]);
