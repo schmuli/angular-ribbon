@@ -1,18 +1,5 @@
-/*
-var ribbonEvents = function ($rootScope) {
-    return {
-        trigger: function (event, args) {
-            return $rootScope.$emit('ribbonEvents-' + event, args);
-        },
-        on: function (event, callback) {
-            return $rootScope.$on('ribbonEvents-' + event, callback);
-        }
-    };
-};
-*/
-
 class RibbonEvents {
-    static Namespace = 'ribbonEvents-';
+    static get Namespace() { return 'ribbonEvents-' };
 
     constructor($rootScope) {
         this.scope = $rootScope;

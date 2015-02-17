@@ -6,32 +6,19 @@ var plugins = require('gulp-load-plugins')({
 });
 
 var config = {
-    destination: 'dist',
-    files: [
-
-    ]
+    destination: 'dist'
 };
 
-gulp.task('debug', ['build/templates'], function () {
-    //return gulp.src(['ngRibbon.prefix', 'src/js/**/!(module)*.js', 'src/js/**/module.js', 'dist/templates.js', 'ngRibbon.suffix'])
-    //    .pipe(plugins.concat('test.js'))
-    //    .pipe(gulp.dest(config.destination));
-    var debug = require('gulp-debug');
-    var angularOrder = require('./gulp-angular-order');
-    return gulp.src('src/js/**/*.js')
-        .pipe(angularOrder())
-        .pipe(debug())
-        ;
-});
+gulp.task('build', ['build/javascript']);
 
-gulp.task('build/javascript', function () {
-    //gulp.src('src/js/**/*.js')
-    return gulp.src(['research/es6/*.js'])
+gulp.task('build/javascript', ['build/templates'], function () {
+    return gulp.src(['ngRibbon.prefix', 'dist/templates.js', 'src/js/**/*.js', 'ngRibbon.suffix'])
         .pipe(plugins.sourcemaps.init())
+        .pipe(plugins.angularOrder({ base: './src' }))
         .pipe(plugins.concat('ngRibbon.js'))
         .pipe(plugins.babel())
         .pipe(plugins.sourcemaps.write('.', { sourceRoot: '../' }))
-        .pipe(gulp.dest('dist'));
+        .pipe(gulp.dest(config.destination));
 });
 
 gulp.task('build/templates', function () {

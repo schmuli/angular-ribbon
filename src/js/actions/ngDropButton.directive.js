@@ -18,5 +18,5 @@ var ngDropButtonDirective = function () {
                 dropButtonController.setCommand(command, scope.popup);
             }
         }
-    }
+    };
 };

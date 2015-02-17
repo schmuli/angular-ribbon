@@ -18,5 +18,5 @@ var ngSplitButtonDirective = function () {
                 splitButtonController.setCommand(command, scope.popup);
             }
         }
-    }
+    };
 };
