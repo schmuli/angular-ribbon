@@ -1,4 +1,4 @@
-class OptimizedResize {
+export class OptimizedResize {
     constructor($window, $timeout) {
         this.window = $window;
         this.$timeout = $timeout;

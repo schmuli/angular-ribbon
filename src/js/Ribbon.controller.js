@@ -1,4 +1,6 @@
-class RibbonController {
+import { ContextualGroup } from './contextual-group';
+
+export class RibbonController {
     get hasBackstage() {
         return !!this.backstage;
     }

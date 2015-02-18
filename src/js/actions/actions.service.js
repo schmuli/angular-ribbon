@@ -1,4 +1,4 @@
-class Actions {
+export class Actions {
     constructor($document, ribbonEvents) {
         this.$document = $document;
 

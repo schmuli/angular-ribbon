@@ -1,4 +1,4 @@
-var ngRibbonMenuItemDirective = function () {
+export var ngRibbonMenuItemDirective = function () {
     return {
         scope: {
             title: '=',

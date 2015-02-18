@@ -1,4 +1,4 @@
-var ngRibbonGroupDirective = function ($compile, dynamicRibbon) {
+export var ngRibbonGroupDirective = function ($compile, dynamicRibbon) {
     return {
         scope: {
             title: '='

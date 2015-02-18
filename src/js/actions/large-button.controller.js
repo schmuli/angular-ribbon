@@ -1,4 +1,4 @@
-class LargeButtonController {
+export class LargeButtonController {
     get visible() {
         return !!this.command && (!this.command.hasOwnProperty('visible') || this.command.visible);
     }

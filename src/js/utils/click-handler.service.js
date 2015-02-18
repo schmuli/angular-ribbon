@@ -1,4 +1,4 @@
-var ClickHandler = function ($timeout) {
+export var ClickHandler = function ($timeout) {
     /*
      var action = firstClick;
      var timerPromise;

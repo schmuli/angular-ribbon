@@ -1,4 +1,4 @@
-var ngIsMultilineDirective = function ($timeout, ribbonEvents) {
+export var ngIsMultilineDirective = function ($timeout, ribbonEvents) {
     return function link(scope, element) {
         setupCheck({
             el: element[0],

@@ -1,4 +1,4 @@
-var ngRibbonBackstageContentDirective = function () {
+export var ngRibbonBackstageContentDirective = function () {
     return {
         require: '^ngRibbon',
         link: function (scope, element, attrs, ribbonController) {

@@ -1,4 +1,4 @@
-var ngRibbonDirective = function ($templateCache, clickHandler, dynamicRibbon) {
+export var ngRibbonDirective = function ($templateCache, clickHandler, dynamicRibbon) {
     return {
         scope: {
             title: '=',
@@ -6,7 +6,7 @@ var ngRibbonDirective = function ($templateCache, clickHandler, dynamicRibbon) {
         },
         transclude: true,
         templateUrl: 'ngRibbon/templates/ribbon-template.html',
-        controller: ['$scope', '$element', '$document', 'ribbonEvents', 'contextualColors', 'clickHandler', RibbonController],
+        controller: 'RibbonController',
         controllerAs: 'ribbon',
         bindToController: true,
         compile: function (element) {

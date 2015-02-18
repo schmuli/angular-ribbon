@@ -1,4 +1,4 @@
-var ngRibbonTabDirective = function () {
+export var ngRibbonTabDirective = function () {
     return {
         scope: {
             title: '=',

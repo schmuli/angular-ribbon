@@ -1,4 +1,4 @@
-class RibbonMenuController {
+export class RibbonMenuController {
     constructor() {
         this.menuItems = [];
     }

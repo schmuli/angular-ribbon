@@ -1,4 +1,4 @@
-var ngDropButtonDirective = function () {
+export var ngDropButtonDirective = function () {
     return {
         scope: {
             command: '@',

@@ -1,4 +1,4 @@
-var ngRibbonMenuDirective = function () {
+export var ngRibbonMenuDirective = function () {
     return {
         scope: true,
         templateUrl: 'ngRibbon/templates/ribbon-menu-template.html',

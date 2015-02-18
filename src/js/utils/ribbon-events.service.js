@@ -1,4 +1,4 @@
-class RibbonEvents {
+export class RibbonEvents {
     static get Namespace() { return 'ribbonEvents-' };
 
     constructor($rootScope) {

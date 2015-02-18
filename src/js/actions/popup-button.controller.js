@@ -1,4 +1,6 @@
-class PopupButtonController extends LargeButtonController {
+import { LargeButtonController } from './large-button.controller';
+
+export class PopupButtonController extends LargeButtonController {
     get opened() {
         return this.visible && !this.disabled && this._opened;
     }

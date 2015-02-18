@@ -1,4 +1,4 @@
-var ngSplitButtonDirective = function () {
+export var ngSplitButtonDirective = function () {
     return {
         scope: {
             command: '@',

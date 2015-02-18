@@ -1,4 +1,4 @@
-var ngRibbonBackstageDirective = function () {
+export var ngRibbonBackstageDirective = function () {
     return {
         scope: {
             title: '='
@@ -6,7 +6,7 @@ var ngRibbonBackstageDirective = function () {
         require: ['^ngRibbon', 'ngRibbonBackstage'],
         transclude: true,
         template: '<div></div>',
-        controller: BackstageController,
+        controller: 'BackstageController',
         controllerAs: 'backstage',
         bindToController: true,
         link: function (scope, element, attrs, controllers, transcludeFn) {

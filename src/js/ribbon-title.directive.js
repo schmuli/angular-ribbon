@@ -1,4 +1,4 @@
-var ngRibbonTitleDirective = function ($document, ribbonEvents, optimizedResize) {
+export var ngRibbonTitleDirective = function ($document, ribbonEvents, optimizedResize) {
     return {
         scope: {
             title: '='

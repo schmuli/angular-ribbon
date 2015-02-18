@@ -1,4 +1,4 @@
-var ngLargeButtonDirective = function () {
+export var ngLargeButtonDirective = function () {
     return {
         scope: {
             command: '@'
