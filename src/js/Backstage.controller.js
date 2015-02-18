@@ -1,4 +1,4 @@
-class BackstageController {
+export class BackstageController {
     constructor() {
         this.opened = false;
     }

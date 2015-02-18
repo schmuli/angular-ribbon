@@ -1,4 +1,5 @@
-class B extends A {
+import {A} from './a';
+export class B extends A {
     constructor(name, age) {
         super(name);
         this.age = age;
@@ -7,4 +8,8 @@ class B extends A {
     print() {
         return super.print() + `, and I'm ${this.age} years old`;
     }
+}
+
+function test() {
+
 }

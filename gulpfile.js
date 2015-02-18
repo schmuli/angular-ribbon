@@ -11,14 +11,38 @@ var config = {
 
 gulp.task('build', ['build/javascript']);
 
+gulp.task('debug', function (cb) {
+    var esperanto = require('esperanto');
+    var file = require('gulp-file');
+    var header = require('gulp-header');
+    var footer = require('gulp-footer');
+
+    return esperanto
+        .bundle({
+            base: 'src/js/',
+            entry: 'module.js'
+        })
+        .then(function (result) {
+            var res = result.concat({
+                intro: '',
+                outro: ''
+            });
+            return file('result.js', res.code, {src: true})
+                .pipe(plugins.babel())
+                .pipe(header('(function () {\n'))
+                .pipe(footer('\n}());\n'))
+                .pipe(gulp.dest('research'));
+        });
+});
+
 var debug = require('gulp-debug');
 gulp.task('build/javascript', ['build/templates'], function () {
     return gulp.src(['ngRibbon.prefix', 'dist/templates.js', 'src/js/**/*.js', 'ngRibbon.suffix'])
         .pipe(plugins.sourcemaps.init())
-        .pipe(plugins.angularOrder({ base: './src' }))
+        .pipe(plugins.angularOrder({base: './src'}))
         .pipe(plugins.concat('ngRibbon.js'))
         .pipe(plugins.babel())
-        .pipe(plugins.sourcemaps.write('.', { sourceRoot: '../' }))
+        .pipe(plugins.sourcemaps.write('.', {sourceRoot: '../'}))
         .pipe(gulp.dest(config.destination));
 });
 

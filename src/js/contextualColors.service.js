@@ -1,4 +1,4 @@
-class ContextualColors {
+export class ContextualColors {
     constructor() {
         this.index = 1;
     }

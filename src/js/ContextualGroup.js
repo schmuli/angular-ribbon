@@ -1,4 +1,4 @@
-class ContextualGroup {
+export class ContextualGroup {
     get hasActive() {
         return this.tabs
                 .filter(function (tab) {

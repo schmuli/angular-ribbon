@@ -1,4 +1,4 @@
-class DynamicRibbonProvider {
+export class DynamicRibbonProvider {
     constructor() {
         this.tabs = [];
         this._commands = {};
