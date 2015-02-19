@@ -1,4 +1,4 @@
-# ngRibbon
+# angular-ribbon
 
 A Ribbon component using AngularJS.
 
@@ -7,29 +7,8 @@ https://github.com/OkGoDoIt/Office-Ribbon-2010
 
 ## Design Notes
 
-Tabs are registered with the TabRegister provider.
-
-	interface TabItem {
-		name: string;
-		/**
-		 * Can be a number or 'last'.
-		 */
-		order: number | string;
-		templateUrl: string;
-		contextual?: {
-			group: string;
-			color: string;
-		}
-	}
-
-	type Deactivate = () => void;
-
-	interface TabService {
-		setContext(tabName: string; context: any): void;
-		activateContextual(groupName: string, context: any): Deactivate;
-	}
-
-Backstage content should be reusable in a welcome screen. There should be a directive for the content (menu and details), which will be used by a backstage and welcome screen directive, each of which will indicate context.
+Backstage content should be reusable in a welcome screen. There should be a directive for the content (menu and details),
+which will be used by a backstage and welcome screen directive, each of which will indicate context.
 
 Each action is a directive that can handle itself: layout, linebreaks.
 
