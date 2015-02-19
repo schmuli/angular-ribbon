@@ -1,11 +1,11 @@
 {
-  "name": "ngRibbon",
+  "name": "angular-ribbon",
   "version": "0.0.1",
   "description": "Ribbon component using AngularJS",
   "scripts": {},
   "repository": {
     "type": "git",
-    "url": "https://github.com/schmuli/ngRibbon.git"
+    "url": "https://github.com/schmuli/angular-ribbon.git"
   },
   "keywords": [
     "Ribbon",
@@ -14,9 +14,9 @@
   "author": "Schmulik Raskin",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/schmuli/ngRibbon/issues"
+    "url": "https://github.com/schmuli/angular-ribbon/issues"
   },
-  "homepage": "https://github.com/schmuli/ngRibbon",
+  "homepage": "https://github.com/schmuli/angular-ribbon",
   "devDependencies": {
     "esperanto": "^0.6.13",
     "gulp": "^3.8.11",
