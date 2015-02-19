@@ -2,16 +2,15 @@
   "name": "angular-ribbon",
   "version": "0.0.1",
   "description": "Ribbon component using AngularJS",
-  "scripts": {},
   "repository": {
     "type": "git",
     "url": "https://github.com/schmuli/angular-ribbon.git"
   },
   "keywords": [
     "Ribbon",
-    "AngularJS"
+    "Angular"
   ],
-  "author": "Schmulik Raskin",
+  "author": "Schmulik Raskin <schmuli@gmail.com>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/schmuli/angular-ribbon/issues"

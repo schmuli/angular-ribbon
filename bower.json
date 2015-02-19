@@ -1,16 +1,26 @@
 {
   "name": "angular-ribbon",
+  "description": "Ribbon component in AngularJS",
   "version": "0.0.1",
   "homepage": "https://github.com/schmuli/angular-ribbon",
+  "license": "MIT",
   "authors": [
-    "Schmulik Raskin"
+    "Schmulik Raskin <schmuli@gmail.com>"
   ],
-  "description": "Ribbon component in AngularJS",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/schmuli/angular-ribbon.git"
+  },
   "keywords": [
     "Ribbon",
     "Angular"
   ],
-  "license": "MIT",
+  "main": [
+    "dist/ribbon.js",
+    "dist/ribbon.tmpl.js",
+    "dist/ribbon-templates.js",
+    "dist/ribbon.css"
+  ],
   "ignore": [
     "**/.*",
     "node_modules",
