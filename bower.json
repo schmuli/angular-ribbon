@@ -22,11 +22,8 @@
     "dist/ribbon.css"
   ],
   "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "test",
-    "tests"
+    "**/*",
+    "!dist/*"
   ],
   "dependencies": {
     "angular-animate": "~1.3.13",
