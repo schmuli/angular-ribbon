@@ -1,11 +1,11 @@
-export var ngRibbonDirective = function ($templateCache, clickHandler, dynamicRibbon) {
+export var ribbonDirective = function ($templateCache, clickHandler, dynamicRibbon) {
     return {
         scope: {
             title: '=',
             ribbonContext: '=context'
         },
         transclude: true,
-        templateUrl: 'ngRibbon/templates/ribbon-template.html',
+        templateUrl: 'ribbon/templates/ribbon-template.html',
         controller: 'RibbonController',
         controllerAs: 'ribbon',
         bindToController: true,

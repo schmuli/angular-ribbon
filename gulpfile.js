@@ -1,6 +1,5 @@
 var gulp = require('gulp');
 var esperanto = require('esperanto');
-var debug = require('gulp-debug');
 var plugins = require('gulp-load-plugins')({
     rename: {
         'gulp-angular-templatecache': 'templateCache',
@@ -9,33 +8,44 @@ var plugins = require('gulp-load-plugins')({
 });
 
 var config = {
-    destination: 'dist'
+    destination: 'dist',
+    baseDir: 'src/js',
+    entryFile: 'module.js',
+    templateFile: 'ribbon-templates.js',
+    outputFile: 'ribbon.js',
+    templateOutputFile: 'ribbon.tmpl.js',
+    path: function (file) {
+        return config.destination + '/' + file;
+    }
 };
 
-gulp.task('build', ['build/javascript']);
+gulp.task('dev', ['build'], function () {
+    gulp.watch('src/js/**/*.js', ['build/javascript']);
+    gulp.watch('src/templates/*-template.html', ['build/javascript']);
+    gulp.watch('src/styles/*.css', ['build/styles']);
+});
+
+gulp.task('build', ['build/javascript', 'build/styles']);
 
 gulp.task('build/javascript', ['build/templates'], function (cb) {
-    // TODO: SourceMaps
-    // See https://github.com/babel/babel-library-boilerplate/blob/master/gulpfile.js#L69
-
     return esperanto
         .bundle({
-            base: 'src/js/',
-            entry: 'module.js'
+            base: config.baseDir,
+            entry: config.entryFile
         })
         .then(function (result) {
             var res = result.concat({
                 intro: '',
                 outro: ''
             });
-            return plugins.file('ribbon.js', res.code, {src: true})
+
+            return plugins.file(config.outputFile, res.code, {src: true})
                 .pipe(plugins.babel())
                 .pipe(header())
                 .pipe(footer())
                 .pipe(gulp.dest(config.destination))
-                .pipe(plugins.src.append('dist/templates.js'))
-                .pipe(debug())
-                .pipe(plugins.concat('ribbon.tml.js'))
+                .pipe(plugins.src.append(config.path(config.templateFile)))
+                .pipe(plugins.concat(config.templateOutputFile))
                 .pipe(gulp.dest(config.destination));
         });
 });
@@ -49,9 +59,10 @@ gulp.task('build/templates', function () {
             removeComments: true
         }))
         .pipe(plugins.templateCache({
-            root: 'ngRibbon/',
+            filename: config.templateFile,
+            root: 'ribbon/',
             standalone: true,
-            module: 'ngRibbon.templates'
+            module: 'ribbon.templates'
         }))
         .pipe(header())
         .pipe(footer())
@@ -60,14 +71,23 @@ gulp.task('build/templates', function () {
 
 gulp.task('build/styles', function () {
     return gulp.src('src/styles/**/*.css')
-        .pipe(plugins.concat('styles.css'))
+        .pipe(plugins.concat('ribbon.css'))
+        .pipe(gulp.dest(config.destination));
+});
+
+gulp.task('minify', ['build'], function () {
+    gulp.src([config.path(config.outputFile), config.path(config.templateOutputFile)])
+        .pipe(plugins.uglify())
+        .pipe(plugins.rename(function (path) {
+            path.extname = '.min.js';
+        }))
         .pipe(gulp.dest(config.destination));
 });
 
 function header() {
-    return plugins.header('(function () {\n');
+    return plugins.header('(function (angular) {\n');
 }
 
 function footer() {
-    return plugins.footer('\n}());\n');
+    return plugins.footer('\n}(angular));\n');
 }

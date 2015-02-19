@@ -1,4 +1,4 @@
-ng-ribbon {
+ribbon {
     display: block;
     font-family: 'Segoe UI', Arial, Verdana, sans-serif;
     margin-bottom: 5px;
@@ -8,14 +8,14 @@ ng-ribbon {
     user-select: none;
 }
 
-ng-ribbon,
-ng-ribbon *,
-ng-ribbon *:before,
-ng-ribbon *:after{
+ribbon,
+ribbon *,
+ribbon *:before,
+ribbon *:after{
     box-sizing: border-box;
 }
 
-ng-ribbon .ribbon {
+ribbon .ribbon {
     background-color: white;
     font-size: 12px;
     position: relative;
@@ -23,12 +23,12 @@ ng-ribbon .ribbon {
     transition: height 100ms linear;
 }
 
-ng-ribbon .ribbon.collapsed {
+ribbon .ribbon.collapsed {
     height: 55px;
     overflow: visible;
 }
 
-ng-ribbon .ribbon.collapsed-remove-active {
+ribbon .ribbon.collapsed-remove-active {
     transition-duration: 300ms;
     transition-delay: 300ms;
 }

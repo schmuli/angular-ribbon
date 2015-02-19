@@ -1,7 +1,7 @@
 <div class="ribbon"
      ng-class="{ 'backstage-open': ribbon.backstage.opened, 'collapsed': ribbon.collapsed, 'open': ribbon.hasActiveTab }">
     <div class="ribbon-title">
-        <ng-ribbon-title data-title="ribbon.title"></ng-ribbon-title>
+        <ribbon-title data-title="ribbon.title"></ribbon-title>
         <div class="tabs">
             <div ng-if="ribbon.hasBackstage"
                  class="tab-name backstage-tab"
@@ -37,7 +37,7 @@
                       d="M377.916,243.5H164.262l58.659-58.661c4.882-4.882,4.882-12.796,0-17.678c-4.883-4.881-12.797-4.881-17.678,0l-79.998,80c-4.882,4.882-4.882,12.796,0,17.678l80,80c2.44,2.44,5.64,3.661,8.839,3.661s6.398-1.221,8.839-3.661 c4.882-4.882,4.882-12.796,0-17.678L164.262,268.5h213.654c6.903,0,12.5-5.597,12.5-12.5S384.819,243.5,377.916,243.5z"></path>
             </svg>
         </div>
-        <div class="backstage-content" ng-ribbon-backstage-content=""></div>
+        <div class="backstage-content" ribbon-backstage-content=""></div>
     </div>
     <div class="tab-content">
         <div class="ribbon-collapse" ng-click="ribbon.toggleCollapse()">

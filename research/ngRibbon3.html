@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>ngRibbon</title>
 
-    <link href="ngRibbon.css" rel="stylesheet"/>
+    <link href="../dist/ribbon.css" rel="stylesheet"/>
     <style>
         html, body {
             padding: 0;
@@ -24,45 +24,45 @@
 </head>
 <body ng-controller="AppController as app">
 
-<ng-ribbon class="ng-cloak" data-title="'Document 1'" data-context="app.ribbonContext">
-    <ng-ribbon-backstage data-title="'File'">
-        <ng-ribbon-menu>
-            <ng-ribbon-menu-item data-title="'Open'">
+<ribbon class="ng-cloak" data-title="'Document 1'" data-context="app.ribbonContext">
+    <ribbon-backstage data-title="'File'">
+        <ribbon-menu>
+            <ribbon-menu-item data-title="'Open'">
                 <div>Recent Cases</div>
-            </ng-ribbon-menu-item>
-            <ng-ribbon-menu-item data-title="'Another'">
+            </ribbon-menu-item>
+            <ribbon-menu-item data-title="'Another'">
                 <div>Another Menu Item</div>
-            </ng-ribbon-menu-item>
-            <ng-ribbon-menu-item data-title="'Close'" action="app.alert('close')"></ng-ribbon-menu-item>
-            <ng-ribbon-menu-separator></ng-ribbon-menu-separator>
-            <ng-ribbon-menu-item data-title="'Options'" action="app.alert('options')"></ng-ribbon-menu-item>
-        </ng-ribbon-menu>
-    </ng-ribbon-backstage>
-    <ng-ribbon-tab data-title="'Home'">
-        <ng-ribbon-group data-title="'Tabs'">
-            <ng-large-button command="ShowTimelineView"></ng-large-button>
-            <ng-large-button command="ShowMapView"></ng-large-button>
-            <ng-large-button command="ShowDataTablesView"></ng-large-button>
-            <ng-split-button command="ShowMutualLinksView" popup="popup.html"></ng-split-button>
-        </ng-ribbon-group>
-        <ng-ribbon-group data-title="'Report'">
-            <ng-large-button command="GenerateReport"></ng-large-button>
-        </ng-ribbon-group>
-        <ng-ribbon-group data-title="'Watch Lists'">
-            <ng-split-button command="ShowWatchlistManagement" popup="popup.html"></ng-split-button>
-        </ng-ribbon-group>
-        <ng-ribbon-group data-title="'Tagging'">
-            <ng-drop-button command="DropButton" popup="popup.html"></ng-drop-button>
-            <ng-drop-button command="DropButton2" popup="popup1.html"></ng-drop-button>
-        </ng-ribbon-group>
-    </ng-ribbon-tab>
-    <ng-ribbon-tab data-title="'Insert'">
-        <ng-ribbon-group data-title="'Pages'"></ng-ribbon-group>
-    </ng-ribbon-tab>
-    <ng-ribbon-tab data-title="'Context'" contextual="table"></ng-ribbon-tab>
-    <ng-ribbon-tab data-title="'Photo 1'" contextual="photo"></ng-ribbon-tab>
-    <ng-ribbon-tab data-title="'Photo 2'" contextual="photo"></ng-ribbon-tab>
-</ng-ribbon>
+            </ribbon-menu-item>
+            <ribbon-menu-item data-title="'Close'" action="app.alert('close')"></ribbon-menu-item>
+            <ribbon-menu-separator></ribbon-menu-separator>
+            <ribbon-menu-item data-title="'Options'" action="app.alert('options')"></ribbon-menu-item>
+        </ribbon-menu>
+    </ribbon-backstage>
+    <ribbon-tab data-title="'Home'">
+        <ribbon-group data-title="'Tabs'">
+            <large-button command="ShowTimelineView"></large-button>
+            <large-button command="ShowMapView"></large-button>
+            <large-button command="ShowDataTablesView"></large-button>
+            <split-button command="ShowMutualLinksView" popup="popup.html"></split-button>
+        </ribbon-group>
+        <ribbon-group data-title="'Report'">
+            <large-button command="GenerateReport"></large-button>
+        </ribbon-group>
+        <ribbon-group data-title="'Watch Lists'">
+            <split-button command="ShowWatchlistManagement" popup="popup.html"></split-button>
+        </ribbon-group>
+        <ribbon-group data-title="'Tagging'">
+            <drop-button command="DropButton" popup="popup.html"></drop-button>
+            <drop-button command="DropButton2" popup="popup1.html"></drop-button>
+        </ribbon-group>
+    </ribbon-tab>
+    <ribbon-tab data-title="'Insert'">
+        <ribbon-group data-title="'Pages'"></ribbon-group>
+    </ribbon-tab>
+    <ribbon-tab data-title="'Context'" contextual="table"></ribbon-tab>
+    <ribbon-tab data-title="'Photo 1'" contextual="photo"></ribbon-tab>
+    <ribbon-tab data-title="'Photo 2'" contextual="photo"></ribbon-tab>
+</ribbon>
 
 <div class="main-content">
     <p>
@@ -91,40 +91,41 @@
 </script>
 
 <script id="dynamic-tab.html" type="text/ng-template">
-    <ng-ribbon-tab data-title="'Dynamic'">
-        <ng-ribbon-group data-title="'Tabs 1'">
-            <ng-large-button command="ShowTimelineView"></ng-large-button>
-            <ng-large-button command="ShowMapView"></ng-large-button>
-            <ng-large-button command="ShowDataTablesView"></ng-large-button>
-            <ng-split-button command="ShowMutualLinksView" popup="popup.html"></ng-split-button>
-        </ng-ribbon-group>
-        <ng-ribbon-group data-title="'Report 1'">
-            <ng-large-button command="GenerateReport"></ng-large-button>
-        </ng-ribbon-group>
-        <ng-ribbon-group data-title="'Watch Lists 1'">
-            <ng-split-button command="ShowWatchlistManagement" popup="popup.html"></ng-split-button>
-        </ng-ribbon-group>
-        <ng-ribbon-group data-title="'Tagging 1'">
-            <ng-drop-button command="DropButton" popup="popup.html"></ng-drop-button>
-            <ng-drop-button command="DropButton2" popup="popup.html"></ng-drop-button>
-        </ng-ribbon-group>
-    </ng-ribbon-tab>
+    <ribbon-tab data-title="'Dynamic'">
+        <ribbon-group data-title="'Tabs 1'">
+            <large-button command="ShowTimelineView"></large-button>
+            <large-button command="ShowMapView"></large-button>
+            <large-button command="ShowDataTablesView"></large-button>
+            <split-button command="ShowMutualLinksView" popup="popup.html"></split-button>
+        </ribbon-group>
+        <ribbon-group data-title="'Report 1'">
+            <large-button command="GenerateReport"></large-button>
+        </ribbon-group>
+        <ribbon-group data-title="'Watch Lists 1'">
+            <split-button command="ShowWatchlistManagement" popup="popup.html"></split-button>
+        </ribbon-group>
+        <ribbon-group data-title="'Tagging 1'">
+            <drop-button command="DropButton" popup="popup.html"></drop-button>
+            <drop-button command="DropButton2" popup="popup.html"></drop-button>
+        </ribbon-group>
+    </ribbon-tab>
 </script>
 
 <script id="dynamic-contextual-tab.html" type="text/ng-template">
-    <ng-ribbon-tab data-title="'Dynamic 2'" contextual="dynamic"></ng-ribbon-tab>
+    <ribbon-tab data-title="'Dynamic 2'" contextual="dynamic"></ribbon-tab>
 </script>
 
 <script id="dynamic-contextual-tab-2.html" type="text/ng-template">
-    <ng-ribbon-tab data-title="'Dynamic 3'" contextual="table"></ng-ribbon-tab>
+    <ribbon-tab data-title="'Dynamic 3'" contextual="table"></ribbon-tab>
 </script>
 
 <script src="../bower_components/angular/angular.js"></script>
 <script src="../bower_components/angular-animate/angular-animate.js"></script>
-<script src="../dist/ngRibbon.js"></script>
+
+<script src="../dist/ribbon.tmpl.js"></script>
 
 <script>
-    angular.module('RibbonApp', ['ngRibbon'])
+    angular.module('RibbonApp', ['ribbon'])
             .controller('AppController', function (commands) {
                 this.alert = function (item) {
                     alert('Called from Menu Item: ' + item);

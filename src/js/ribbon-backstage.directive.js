@@ -1,9 +1,9 @@
-export var ngRibbonBackstageDirective = function () {
+export var ribbonBackstageDirective = function () {
     return {
         scope: {
             title: '='
         },
-        require: ['^ngRibbon', 'ngRibbonBackstage'],
+        require: ['^ribbon', 'ribbonBackstage'],
         transclude: true,
         template: '<div></div>',
         controller: 'BackstageController',

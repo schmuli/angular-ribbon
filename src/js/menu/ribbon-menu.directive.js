@@ -1,7 +1,7 @@
-export var ngRibbonMenuDirective = function () {
+export var ribbonMenuDirective = function () {
     return {
         scope: true,
-        templateUrl: 'ngRibbon/templates/ribbon-menu-template.html',
+        templateUrl: 'ribbon/templates/ribbon-menu-template.html',
         transclude: true,
         controller: 'RibbonMenuController',
         controllerAs: 'menu',

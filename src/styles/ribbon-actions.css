@@ -1,4 +1,4 @@
-ng-ribbon .button {
+ribbon .button {
     min-width: 36px;
     max-width: 57px;
     cursor: pointer;
@@ -6,27 +6,27 @@ ng-ribbon .button {
     position: relative;
 }
 
-ng-ribbon .button.disabled {
+ribbon .button.disabled {
     opacity: 0.5;
     pointer-events: none;
 }
 
-ng-ribbon .drop-button,
-ng-ribbon .large-button {
+ribbon .drop-button,
+ribbon .large-button {
     padding: 2px;
 }
 
-ng-ribbon .drop-button:hover,
-ng-ribbon .large-button:hover {
+ribbon .drop-button:hover,
+ribbon .large-button:hover {
     background-color: #D5E1F2;
 }
 
-ng-ribbon .drop-button:active,
-ng-ribbon .large-button:active {
+ribbon .drop-button:active,
+ribbon .large-button:active {
     background-color: #C2D5F2;
 }
 
-ng-ribbon .button img {
+ribbon .button img {
     min-width: 28px;
     max-width: 36px;
     min-height: 28px;
@@ -35,71 +35,71 @@ ng-ribbon .button img {
     margin: 0 auto;
 }
 
-ng-ribbon .large-button > .title {
+ribbon .large-button > .title {
     text-align: center;
     overflow: hidden;
     max-width: 51px;
 }
 
-ng-ribbon .large-button > img,
-ng-ribbon .drop-button > img {
+ribbon .large-button > img,
+ribbon .drop-button > img {
     margin-bottom: 5px;
 }
 
-ng-ribbon .split-button {
+ribbon .split-button {
     display: flex;
     flex-direction: column;
 }
 
-ng-ribbon .split-button:hover {
+ribbon .split-button:hover {
     border-color: #D5E1F2;
 }
 
-ng-ribbon .split-button:active {
+ribbon .split-button:active {
     border-color: #C2D5F2;
 }
 
-ng-ribbon .split-button .image {
+ribbon .split-button .image {
     padding: 2px 0;
 }
 
-ng-ribbon .split-button img {
+ribbon .split-button img {
     margin-bottom: 3px;
 }
 
-ng-ribbon .split-button .title {
+ribbon .split-button .title {
     flex: 1;
     padding: 0 2px;
 }
 
-ng-ribbon .button .title {
+ribbon .button .title {
     text-align: center;
 }
 
-ng-ribbon .button .title > svg {
+ribbon .button .title > svg {
     display: block;
     margin: 6px auto 0;
 }
 
-ng-ribbon .button .title > .multiline + svg {
+ribbon .button .title > .multiline + svg {
     display: inline;
     vertical-align: top;
 }
 
-ng-ribbon .split-button .image:hover,
-ng-ribbon .split-button .title:hover {
+ribbon .split-button .image:hover,
+ribbon .split-button .title:hover {
     background-color: #D5E1F2;
 }
 
-ng-ribbon .drop-button.open,
-ng-ribbon .split-button.open .image,
-ng-ribbon .split-button.open .title,
-ng-ribbon .split-button .image:active,
-ng-ribbon .split-button .title:active {
+ribbon .drop-button.open,
+ribbon .split-button.open .image,
+ribbon .split-button.open .title,
+ribbon .split-button .image:active,
+ribbon .split-button .title:active {
     background-color: #C2D5F2;
 }
 
-ng-ribbon .ribbon-popup {
+ribbon .ribbon-popup {
     display: none;
     position: absolute;
     top: 100%;
@@ -115,7 +115,7 @@ ng-ribbon .ribbon-popup {
     overflow: auto;
 }
 
-ng-ribbon .button.open .ribbon-popup {
+ribbon .button.open .ribbon-popup {
     display: block;
     animation: show-popup 50ms linear;
 }

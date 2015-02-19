@@ -1,9 +1,9 @@
-ng-ribbon .ribbon .tabs {
+ribbon .ribbon .tabs {
     width: 100%;
     margin-bottom: -1px;
 }
 
-ng-ribbon .tabs .tab-name {
+ribbon .tabs .tab-name {
     display: inline-block;
     cursor: pointer;
     padding: 4px 10px;
@@ -14,14 +14,14 @@ ng-ribbon .tabs .tab-name {
     border-color: transparent;
 }
 
-ng-ribbon .tabs .tab-name.active {
+ribbon .tabs .tab-name.active {
     border-color: #d4d4d4;
     border-bottom: solid 1px white;
     color: #2b579a;
     background-color: white;
 }
 
-ng-ribbon .tabs .tab-name.backstage-tab {
+ribbon .tabs .tab-name.backstage-tab {
     background-color: #2b579a;
     border-bottom: solid 1px;
     border-color: #2b579a;
@@ -30,7 +30,7 @@ ng-ribbon .tabs .tab-name.backstage-tab {
     padding-right: 20px;
 }
 
-ng-ribbon .tabs .tab-name.backstage-tab:hover {
+ribbon .tabs .tab-name.backstage-tab:hover {
     background-color: #3e6db5;
     border-color: #3e6db5;
 }

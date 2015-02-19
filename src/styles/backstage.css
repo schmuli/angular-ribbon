@@ -1,4 +1,4 @@
-ng-ribbon .ribbon .backstage {
+ribbon .ribbon .backstage {
     position: fixed;
     top: 0;
     left: 0;
@@ -9,15 +9,15 @@ ng-ribbon .ribbon .backstage {
     transform: translateX(-100%);
 }
 
-ng-ribbon .ribbon.backstage-open-remove-active  .backstage {
+ribbon .ribbon.backstage-open-remove-active  .backstage {
     animation: backstage-out 100ms linear;
 }
 
-ng-ribbon .ribbon.backstage-open .backstage {
+ribbon .ribbon.backstage-open .backstage {
     transform: translateX(0);
 }
 
-ng-ribbon .ribbon.backstage-open-add .backstage {
+ribbon .ribbon.backstage-open-add .backstage {
     animation: backstage-in 100ms linear;
 }
 
@@ -39,7 +39,7 @@ ng-ribbon .ribbon.backstage-open-add .backstage {
     }
 }
 
-ng-ribbon .ribbon .backstage .backstage-close {
+ribbon .ribbon .backstage .backstage-close {
     position: absolute;
     width: 34px;
     height: 34px;
@@ -50,14 +50,14 @@ ng-ribbon .ribbon .backstage .backstage-close {
     margin: 20px 0 15px 20px;
 }
 
-ng-ribbon .ribbon .backstage .backstage-close:hover {
+ribbon .ribbon .backstage .backstage-close:hover {
     border-color: #97B1D8;
 }
 
-ng-ribbon .ribbon .backstage .backstage-close:hover path {
+ribbon .ribbon .backstage .backstage-close:hover path {
     fill: #97B1D8;
 }
 
-ng-ribbon .ribbon .backstage .backstage-content {
+ribbon .ribbon .backstage .backstage-content {
     height: 100%;
 }

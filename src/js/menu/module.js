@@ -1,10 +1,10 @@
 import { RibbonMenuController } from './ribbon-menu.controller';
-import { ngRibbonMenuDirective } from './ribbon-menu.directive';
-import { ngRibbonMenuItemDirective } from './ribbon-menu-item.directive';
-import { ngRibbonMenuSeparatorDirective } from './ribbon-menu-separator.directive';
+import { ribbonMenuDirective } from './ribbon-menu.directive';
+import { ribbonMenuItemDirective } from './ribbon-menu-item.directive';
+import { ribbonMenuSeparatorDirective } from './ribbon-menu-separator.directive';
 
-export default angular.module('ngRibbon.menu', [])
+export default angular.module('ribbon.menu', [])
     .controller('RibbonMenuController', [RibbonMenuController])
-    .directive('ngRibbonMenu', [ngRibbonMenuDirective])
-    .directive('ngRibbonMenuItem', [ngRibbonMenuItemDirective])
-    .directive('ngRibbonMenuSeparator', [ngRibbonMenuSeparatorDirective]);
+    .directive('ribbonMenu', [ribbonMenuDirective])
+    .directive('ribbonMenuItem', [ribbonMenuItemDirective])
+    .directive('ribbonMenuSeparator', [ribbonMenuSeparatorDirective]);

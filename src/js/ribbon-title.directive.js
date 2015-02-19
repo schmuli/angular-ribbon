@@ -1,10 +1,10 @@
-export var ngRibbonTitleDirective = function ($document, ribbonEvents, optimizedResize) {
+export var ribbonTitleDirective = function ($document, ribbonEvents, optimizedResize) {
     return {
         scope: {
             title: '='
         },
-        require: '^ngRibbon',
-        templateUrl: 'ngRibbon/templates/ribbon-title-template.html',
+        require: '^ribbon',
+        templateUrl: 'ribbon/templates/ribbon-title-template.html',
         link: function (scope, element) {
             var titleElement = element[0].querySelector('.title');
 

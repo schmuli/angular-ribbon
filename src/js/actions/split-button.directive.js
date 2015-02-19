@@ -1,4 +1,4 @@
-export var ngSplitButtonDirective = function () {
+export var splitButtonDirective = function () {
     return {
         scope: {
             command: '@',
@@ -6,8 +6,8 @@ export var ngSplitButtonDirective = function () {
         },
         controller: 'PopupButtonController',
         controllerAs: 'button',
-        require: ['^ngRibbon', 'ngSplitButton'],
-        templateUrl: 'ngRibbon/templates/ribbon-split-button-template.html',
+        require: ['^ribbon', 'splitButton'],
+        templateUrl: 'ribbon/templates/ribbon-split-button-template.html',
         transclude: true,
         replace: true,
         link: function (scope, element, attrs, ctrls) {

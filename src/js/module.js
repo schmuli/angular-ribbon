@@ -8,30 +8,30 @@ import { ContextualColors } from './contextual-colors.service';
 import { RibbonController } from './ribbon.controller';
 import { BackstageController } from './ribbon-backstage.controller';
 
-import { ngRibbonDirective } from './ribbon.directive';
-import { ngRibbonTitleDirective } from './ribbon-title.directive';
-import { ngRibbonBackstageDirective } from './ribbon-backstage.directive';
-import { ngRibbonBackstageContentDirective } from './ribbon-backstage-content.directive';
-import { ngRibbonTabDirective } from './ribbon-tab.directive';
-import { ngRibbonGroupDirective } from './ribbon-group.directive';
+import { ribbonDirective } from './ribbon.directive';
+import { ribbonTitleDirective } from './ribbon-title.directive';
+import { ribbonBackstageDirective } from './ribbon-backstage.directive';
+import { ribbonBackstageContentDirective } from './ribbon-backstage-content.directive';
+import { ribbonTabDirective } from './ribbon-tab.directive';
+import { ribbonGroupDirective } from './ribbon-group.directive';
 
 var dependencies = [
     'ngAnimate',
-    'ngRibbon.templates',
+    'ribbon.templates',
     
     actions.name,
     menu.name,
     utils.name
 ];
 
-angular.module('ngRibbon', ['ngAnimate', 'ngRibbon.actions', 'ngRibbon.menu', 'ngRibbon.utils', 'ngRibbon.templates'])
+angular.module('ribbon', dependencies)
     .provider('dynamicRibbon', [DynamicRibbonProvider])
     .service('contextualColors', [ContextualColors]) 
     .controller('RibbonController', ['$scope', '$element', '$document', 'ribbonEvents', 'contextualColors', 'clickHandler', RibbonController])
     .controller('BackstageController', [BackstageController])
-    .directive('ngRibbon', ['$templateCache', 'clickHandler', 'dynamicRibbon', ngRibbonDirective])
-    .directive('ngRibbonTitle', ['$document', 'ribbonEvents', 'optimizedResize', ngRibbonTitleDirective])
-    .directive('ngRibbonBackstage', [ngRibbonBackstageDirective])
-    .directive('ngRibbonBackstageContent', [ngRibbonBackstageContentDirective])
-    .directive('ngRibbonTab', [ngRibbonTabDirective])
-    .directive('ngRibbonGroup', ['$compile', 'dynamicRibbon', ngRibbonGroupDirective]);
+    .directive('ribbon', ['$templateCache', 'clickHandler', 'dynamicRibbon', ribbonDirective])
+    .directive('ribbonTitle', ['$document', 'ribbonEvents', 'optimizedResize', ribbonTitleDirective])
+    .directive('ribbonBackstage', [ribbonBackstageDirective])
+    .directive('ribbonBackstageContent', [ribbonBackstageContentDirective])
+    .directive('ribbonTab', [ribbonTabDirective])
+    .directive('ribbonGroup', ['$compile', 'dynamicRibbon', ribbonGroupDirective]);

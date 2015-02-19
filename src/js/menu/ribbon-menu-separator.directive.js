@@ -1,6 +1,6 @@
-export var ngRibbonMenuSeparatorDirective = function () {
+export var ribbonMenuSeparatorDirective = function () {
     return {
-        require: '^ngRibbonMenu',
+        require: '^ribbonMenu',
         link: function (scope, element, attrs, ribbonMenuController) {
             ribbonMenuController.addSeparator();
         }

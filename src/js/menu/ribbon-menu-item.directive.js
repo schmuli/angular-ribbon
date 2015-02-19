@@ -1,10 +1,10 @@
-export var ngRibbonMenuItemDirective = function () {
+export var ribbonMenuItemDirective = function () {
     return {
         scope: {
             title: '=',
             action: '&?'
         },
-        require: '^ngRibbonMenu',
+        require: '^ribbonMenu',
         link: function (scope, element, attrs, ribbonMenuController) {
             var menuItem = {
                 title: scope.title,

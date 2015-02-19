@@ -1,4 +1,4 @@
-export var ngRibbonTabDirective = function () {
+export var ribbonTabDirective = function () {
     return {
         scope: {
             title: '=',
@@ -7,7 +7,7 @@ export var ngRibbonTabDirective = function () {
         template: '<div class="tab" ng-transclude ng-show="tab.active"></div>',
         transclude: true,
         replace: true,
-        require: ['^ngRibbon', 'ngRibbonTab'],
+        require: ['^ribbon', 'ribbonTab'],
         controller: function () {
         },
         link: {

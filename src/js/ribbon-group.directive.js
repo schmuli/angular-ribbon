@@ -1,11 +1,11 @@
-export var ngRibbonGroupDirective = function ($compile, dynamicRibbon) {
+export var ribbonGroupDirective = function ($compile, dynamicRibbon) {
     return {
         scope: {
             title: '='
         },
-        templateUrl: 'ngRibbon/templates/ribbon-group-template.html',
+        templateUrl: 'ribbon/templates/ribbon-group-template.html',
         transclude: true,
-        require: '^ngRibbonTab',
+        require: '^ribbonTab',
         link: function (scope, element, attrs, tabController) {
             var transclude = angular.element(element[0].firstElementChild);
             var commands = dynamicRibbon.commands(tabController.title, scope.title);

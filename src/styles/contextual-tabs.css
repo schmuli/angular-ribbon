@@ -1,69 +1,69 @@
-ng-ribbon .contextual-group {
+ribbon .contextual-group {
     display: inline-block;
     position: relative;
     margin-right: 5px;
 }
 
-ng-ribbon .contextual-group.color-1 {
+ribbon .contextual-group.color-1 {
     border-top-color: #C9599C;
     background-color: #FCF0F7;
     color: #C9599C;
 }
 
-ng-ribbon .contextual-group.color-2 {
+ribbon .contextual-group.color-2 {
     border-top-color: #F2CB1D;
     background-color: #FFFBE6;
     color: #F2CB1D;
 }
 
-ng-ribbon .contextual-group.color-3 {
+ribbon .contextual-group.color-3 {
     border-top-color: #FF9D00;
     background-color: #FFF8ED;
     color: #FF9D00;
 }
 
-ng-ribbon .contextual-group.color-4 {
+ribbon .contextual-group.color-4 {
     border-top-color: #49A349;
     background-color: #E6F3E6;
     color: #49A349;
 }
 
-ng-ribbon .contextual-group.color-5 {
+ribbon .contextual-group.color-5 {
     border-top-color: #935ED3;
     background-color: #F6F1FC;
     color: #935ED3;
 }
 
-ng-ribbon .contextual-group.color-6 {
+ribbon .contextual-group.color-6 {
     border-top-color: #2299AB;
     background-color: #EFF8F9;
     color: #2299AB;
 }
 
-ng-ribbon .contextual-group > span {
+ribbon .contextual-group > span {
     display: block;
     position: absolute;
     left: 0;
     right: 0;
     top: -30px;
     background-color: inherit;
-    border-top: 5px solid inherit;
+    border-top: 5px solid;
     line-height: 25px;
     text-align: center;
     text-transform: uppercase;
     z-index: 1001;
 }
 
-ng-ribbon .ribbon.backstage-open .contextual-group > span {
+ribbon .ribbon.backstage-open .contextual-group > span {
     visibility: hidden;
 }
 
-ng-ribbon .contextual-group .tab-name {
+ribbon .contextual-group .tab-name {
     color: initial;
     margin-bottom: 0;
 }
 
-ng-ribbon .contextual-group .tab-name.active {
+ribbon .contextual-group .tab-name.active {
     color: inherit;
     margin-bottom: -1px;
 }

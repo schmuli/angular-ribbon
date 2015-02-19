@@ -1,4 +1,4 @@
-ng-ribbon .ribbon .tab-content {
+ribbon .ribbon .tab-content {
     position: absolute;
     top: 56px;
     height: 104px;
@@ -7,35 +7,35 @@ ng-ribbon .ribbon .tab-content {
     border-bottom: solid 1px #d5d5d5;
 }
 
-ng-ribbon .ribbon.collapsed .tab-content {
+ribbon .ribbon.collapsed .tab-content {
     z-index: -1;
     transform: translateY(-100%);
     transition: transform .3s linear, border 0s linear;
     border-bottom-color: transparent;
 }
 
-ng-ribbon .ribbon.collapsed.backstage-open .tab-content {
+ribbon .ribbon.collapsed.backstage-open .tab-content {
     z-index: auto;
     transform: initial;
     transition-duration: 0s;
 }
 
-ng-ribbon .ribbon.open .tab-content {
+ribbon .ribbon.open .tab-content {
     transform: initial;
     transition: transform .3s linear, border 0s linear;
 }
 
-ng-ribbon .ribbon .tab-content > .dynamic-tabs {
+ribbon .ribbon .tab-content > .dynamic-tabs {
     height: 100%;
 }
 
-ng-ribbon .ribbon .tab-content .tab {
+ribbon .ribbon .tab-content .tab {
     display: flex;
     height: 100%;
     margin-right: 30px;
 }
 
-ng-ribbon .ribbon .tab-content ng-ribbon-group {
+ribbon .ribbon .tab-content ribbon-group {
     display: flex;
     flex-direction: column;
     margin: 3px 0;
@@ -43,20 +43,20 @@ ng-ribbon .ribbon .tab-content ng-ribbon-group {
     min-width: 60px;
 }
 
-ng-ribbon .ribbon .tab-content ng-ribbon-group > [ng-transclude] {
+ribbon .ribbon .tab-content ribbon-group > [ng-transclude] {
     flex: 1;
     padding: 7px 7px 0 7px;
     display: flex;
     justify-content: center;
 }
 
-ng-ribbon .ribbon .tab-content ng-ribbon-group > .group-label {
+ribbon .ribbon .tab-content ribbon-group > .group-label {
     text-align: center;
     color: #666666;
     padding: 0 2px;
 }
 
-ng-ribbon .ribbon .tab-content .ribbon-collapse {
+ribbon .ribbon .tab-content .ribbon-collapse {
     position: absolute;
     right: 0;
     bottom: 0;
@@ -66,26 +66,26 @@ ng-ribbon .ribbon .tab-content .ribbon-collapse {
     cursor: pointer;
 }
 
-ng-ribbon .ribbon .tab-content .ribbon-collapse:hover {
+ribbon .ribbon .tab-content .ribbon-collapse:hover {
     background-color: #D5E1F2;
 }
 
-ng-ribbon .ribbon.collapsed .tab-content .ribbon-collapse {
+ribbon .ribbon.collapsed .tab-content .ribbon-collapse {
     display: none;
 }
 
-ng-ribbon .ribbon.collapsed.open .tab-content .ribbon-collapse {
+ribbon .ribbon.collapsed.open .tab-content .ribbon-collapse {
     display: block;
 }
 
-ng-ribbon .ribbon .tab-content .ribbon-collapse #thumbtack {
+ribbon .ribbon .tab-content .ribbon-collapse #thumbtack {
     display: none;
 }
 
-ng-ribbon .ribbon.collapsed .tab-content .ribbon-collapse #thumbtack {
+ribbon .ribbon.collapsed .tab-content .ribbon-collapse #thumbtack {
     display: inline;
 }
 
-ng-ribbon .ribbon.collapsed .tab-content .ribbon-collapse #angle-up {
+ribbon .ribbon.collapsed .tab-content .ribbon-collapse #angle-up {
     display: none;
 }

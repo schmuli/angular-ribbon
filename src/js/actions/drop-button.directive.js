@@ -1,11 +1,11 @@
-export var ngDropButtonDirective = function () {
+export var dropButtonDirective = function () {
     return {
         scope: {
             command: '@',
             popup: '@'
         },
-        require: ['^ngRibbon', 'ngDropButton'],
-        templateUrl: 'ngRibbon/templates/ribbon-drop-button-template.html',
+        require: ['^ribbon', 'dropButton'],
+        templateUrl: 'ribbon/templates/ribbon-drop-button-template.html',
         transclude: true,
         replace: true,
         controller: 'PopupButtonController',
